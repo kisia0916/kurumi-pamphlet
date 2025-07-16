@@ -1,30 +1,25 @@
 "use client"
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card-food'
+import type { FoodData } from '@prisma/client'
 import { AlertCircle, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
-type FoodItem = {
-  id: string; // PrismaのUUIDに合わせてString型に変更
-  name: string;
-  category: string;
-  sales_status: "在庫あり" | "残りわずか" | "売り切れ"; // Prismaのsales_statusに合わせて変更
-  allergens: string[];
-  photo: string; // Prismaのphotoに合わせて変更
-  amount: number; // Prismaのamountに合わせて変更
-};
 
 
-function FoodCard({ food }: { food: FoodItem }) {
+function FoodCard({ food }: { food: FoodData }) {
   // ステータスに応じたアイコンを取得する関数
+  const StatusText = food.status === "AVAILABLE" ? "在庫あり" :
+    food.status === "FEW" ? "残りわずか" :
+    food.status === "SOLDOUT" ? "売り切れ" : "不明"
   const getStatusIcon = () => {
-    switch (food.sales_status) {
-      case "在庫あり":
+    switch (food.status) {
+      case "AVAILABLE":
         return <CheckCircle2 className="h-4 w-4 mr-1 text-green-500" />
-      case "残りわずか":
+      case "FEW":
         return <AlertTriangle className="h-4 w-4 mr-1" />
-      case "売り切れ":
+      case "SOLDOUT":
         return <XCircle className="h-4 w-4 mr-1" />
       default:
         return null
@@ -45,9 +40,8 @@ function FoodCard({ food }: { food: FoodItem }) {
       <CardContent className="pt-0 flex-grow">
         <h3 className="text-base font-semibold mb-0">{food.name}</h3>
         <p className="text-base font-bold text-primary mb-1">
-          ¥{food.amount ? food.amount.toLocaleString() : "N/A"}
+          ¥{food.price ? food.price.toLocaleString() : "N/A"}
         </p>
-        <p className="text-sm text-muted-foreground mb-2">カテゴリー: {food.category}</p>
 
         <div className="flex items-start gap-1 mb-3">
           <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5" />
@@ -65,14 +59,23 @@ function FoodCard({ food }: { food: FoodItem }) {
       </CardContent>
       <CardFooter className="pt-0">
         <div
-          className={`w-full bg-${food.sales_status === "在庫あり" ? "green-100" : food.sales_status === "残りわずか" ? "amber-100" : "red-100"}`}
+          className={`w-full bg-${food.status === "AVAILABLE" ? "green-100" : food.status === "FEW" ? "amber-100" : "red-100"}`}
         >
           <Badge
-            variant={food.sales_status === "残りわずか" ? "secondary" : food.sales_status === "在庫あり" ? "default" : "destructive"}
-            className="text-sm px-2 py-2 font-bold flex items-center w-full h-9 justify-center border-2 border-green-500 bg-white"
+            variant="outline"
+            className={`text-sm px-2 py-2 font-bold flex items-center w-full h-9 justify-center border-2
+              ${
+                food.status === "AVAILABLE"
+                  ? "border-green-500 bg-green-50 text-green-700"
+                  : food.status === "FEW"
+                  ? "border-amber-500 bg-amber-50 text-amber-700"
+                  : "border-red-500 bg-red-50 text-red-700"
+              }`}
           >
             {getStatusIcon()}
-            <span className="text-green-500">{food.sales_status}</span>
+            <span>
+              {StatusText}
+            </span>
           </Badge>
         </div>
       </CardFooter>

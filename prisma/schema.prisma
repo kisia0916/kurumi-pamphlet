@@ -12,14 +12,24 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+enum FoodStatus {
+  AVAILABLE
+  FEW
+  SOLDOUT
+}
+enum FoodCategory {
+  MAIN
+  SUB
+  DESSERT
+}
 model FoodData {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
   name       String
+  category   FoodCategory
   photo      String
   price      Int
-  status     String
+  status     FoodStatus
   allergens  String[]
 }
 
