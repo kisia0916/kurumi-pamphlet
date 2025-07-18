@@ -1,14 +1,31 @@
-import React from 'react'
 
-function NavigationButton(props:{
+import React from 'react'
+import { useRouter } from 'next/navigation';
+
+function NavigationButton(props: {
   now_page: "map" | "food" | "stamp" | "timetable",
   set_now_page: (page: "map" | "food" | "stamp" | "timetable") => void,
   page: "map" | "food" | "stamp" | "timetable",
   icon: string,
   title: string
 }) {
+  const router = useRouter();
+
+  // ページ名からエンドポイントへのマッピング
+  const pageToPath: Record<typeof props.page, string> = {
+    map: '/map',
+    food: '/food',
+    stamp: '/stamp',
+    timetable: '/timetable',
+  };
+
+  const handleClick = () => {
+    props.set_now_page(props.page);
+    router.push(pageToPath[props.page]);
+  };
+
   return (
-    <button className='w-12 h-full ' onClick={() => props.set_now_page(props.page)}>
+    <button className='w-12 h-full ' onClick={handleClick}>
       <div
         className={`w-full flex relative transition-transform duration-200 ${props.now_page === props.page ? "scale-110" : "scale-100"}`}
       >
@@ -24,7 +41,7 @@ function NavigationButton(props:{
         <span className='text-xs main-font-thin text-[11px] text-center whitespace-nowrap'>{props.title}</span>
       </div>
     </button>
-  )
+  );
 }
 
 export default NavigationButton
