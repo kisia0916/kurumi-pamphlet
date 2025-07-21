@@ -7,11 +7,11 @@ function MapContentsCard(props:{name:string,content_num:number,flower:number}) {
       <div className='flex'>
         <div className='w-40 h-22 bg-amber-300 rounded-[10px]'></div>
         <div className='h-full ml-4'>
-          <span className='main-font-thin text-[23px] flex mt-3'>{props.name}</span>
-          <div className='flex mt-1'>
-            <span className='main-font-thin text-[16px] text-gray-500'>企画数:{props.content_num}</span>
+          <span className='main-font-thin text-[20px] flex mt-3'>{props.name}</span>
+          <div className='flex mt-2'>
+            <span className='main-font-thin text-[14px] text-gray-500'>企画数:{props.content_num}</span>
             <div className='w-[1px] h-4 bg-gray-500 m-auto ml-1 mr-1'></div>
-            <span className='main-font-thin text-[16px] text-gray-500'>階数:{props.flower}</span>
+            <span className='main-font-thin text-[14px] text-gray-500'>階数:{props.flower}</span>
           </div>
       </div>
       </div>

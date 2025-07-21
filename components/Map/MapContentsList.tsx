@@ -69,7 +69,7 @@ function MapContentsList(props:{content_id:string}) {
 }, [handleChangeHeight]);
 
   return (
-      <div className='w-full bg-white rounded-t-3xl absolute bottom-0' ref={barRef}  style={{maxHeight:"calc(100dvh - 60px - 80px)",minHeight:"calc(100dvh - 80px - 300px)",boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}} >
+      <div className='z-6 w-full bg-white rounded-t-3xl absolute bottom-0' ref={barRef}  style={{maxHeight:"calc(100dvh - 60px - 80px)",minHeight:"calc(100dvh - 80px - 300px)",boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}} >
         <div className='w-full h-6 flex'
             draggable={true}
             onDrag={handleOnDrag}
@@ -79,7 +79,7 @@ function MapContentsList(props:{content_id:string}) {
           <div className='h-1 w-25 m-auto bg-gray-400 rounded-2xl'></div>
         </div>
         <div className='w-full h-10 flex justify-between'>
-            <p className='main-font-thin text-2xl m-auto ml-5'>マップ</p>
+            <p className='main-font-thin text-[20px] m-auto ml-6'>校舎一覧</p>
             <button className='w-8 h-8 bg-gray-200 mr-4 rounded-[50px] flex m-auto' onClick={()=>{
               change_size()
             }}>{now_size_status?<ChevronDown className='m-auto' />:<ChevronUp className='m-auto'/>}</button>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import MapPin from './MapPin';
+import { Button } from '../ui/button';
+import { Minus, Plus } from 'lucide-react';
 
 function Map() {
     const [selected, setSelected] = useState<string | null>(null);
@@ -16,8 +18,16 @@ function Map() {
     
   return (
     <div className='w-full z-10'>
+        <div className="z-5 flex flex-col absolute mt-[220px] right-5">
+          <Button variant="outline" size="icon" className="bg-white shadow-md rounded-b-none">
+            <Plus className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon" className="bg-white shadow-md rounded-t-none border-t-0">
+            <Minus className="h-4 w-4" />
+          </Button>
+        </div>
         <TransformWrapper
-        initialScale={1.5}
+        initialScale={1}
         centerOnInit
         velocityAnimation={{ disabled: false }}
         >
@@ -25,7 +35,7 @@ function Map() {
             <div className="w-full h-[300px] flex items-center justify-center">
             <div className="relative w-[100%] max-w-[100%] ">
                 <img
-                src="/map_data/main2.png"
+                src="/map_data/map3.png"
                 alt="School Map"
                 className="w-full h-full object-contain"
                 draggable={false}
@@ -46,6 +56,7 @@ function Map() {
             <button onClick={() => setSelected(null)} className="mt-2 px-3 py-1 bg-gray-200 rounded">閉じる</button>
             </div>
         )}
+
     </div>
   )
 }
