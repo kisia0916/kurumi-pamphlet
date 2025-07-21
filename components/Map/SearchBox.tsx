@@ -4,7 +4,7 @@ import React from 'react'
 function SearchBox() {
   return (
     <div className="w-full flex justify-center mt-5 ">
-      <div className="w-[90%] h-15 flex rounded-[50px] z-50"  style={{boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}}>
+      <div className="w-[94%] h-14 flex rounded-[50px] z-50"  style={{boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}}>
         <div className="w-[70px] h-full flex items-center justify-center">
             <Search size={30} className="text-gray-500" />
         </div>

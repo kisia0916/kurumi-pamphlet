@@ -1,13 +1,26 @@
-import { X } from 'lucide-react';
-import React, { useEffect } from 'react'
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import React, { useEffect, useState } from 'react'
+import MapContentsCardList from './MapContentsCardList';
 
-function MapContentsList() {
+function MapContentsList(props:{content_id:string}) {
   const targetRef = React.useRef<HTMLDivElement>(null);
   const barRef = React.useRef<HTMLDivElement>(null)
   const hiddenRef = React.useRef<HTMLImageElement>(null);
+  const [now_size_status,set_now_size_status] = useState<boolean>(false)
+  const change_size = ()=>{
+    if (barRef.current){
+      if (!now_size_status){
+          barRef.current.style.height = "calc(100dvh - 60px - 80px)"
+          set_now_size_status(true)
+      }else{
+          barRef.current.style.height = "calc(100dvh - 80px - 300px)"
+          set_now_size_status(false)
+      }
+    }
+  }
   useEffect(()=>{
     if (barRef.current){
-        barRef.current.style.height = "300px"
+        barRef.current.style.height = `calc(100dvh - 80px - 300px)`
     }
   },[barRef])
 
@@ -56,18 +69,23 @@ function MapContentsList() {
 }, [handleChangeHeight]);
 
   return (
-      <div className='w-full bg-white rounded-t-3xl absolute bottom-0' ref={barRef}  style={{maxHeight:"calc(100dvh - 60px - 80px)",boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}} >
-        <div className='w-full h-8 flex'
+      <div className='w-full bg-white rounded-t-3xl absolute bottom-0' ref={barRef}  style={{maxHeight:"calc(100dvh - 60px - 80px)",minHeight:"calc(100dvh - 80px - 300px)",boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)'}} >
+        <div className='w-full h-6 flex'
             draggable={true}
             onDrag={handleOnDrag}
             onDragStart={handleOnDragStart}
             ref={targetRef}
         >
-            <div className='h-1 w-30 m-auto bg-gray-400 rounded-2xl'></div>
+          <div className='h-1 w-25 m-auto bg-gray-400 rounded-2xl'></div>
         </div>
         <div className='w-full h-10 flex justify-between'>
             <p className='main-font-thin text-2xl m-auto ml-5'>マップ</p>
-            <div className='w-8 h-8 bg-gray-200 mr-4 rounded-[50px] flex m-auto'><X className='m-auto'/></div>
+            <button className='w-8 h-8 bg-gray-200 mr-4 rounded-[50px] flex m-auto' onClick={()=>{
+              change_size()
+            }}>{now_size_status?<ChevronDown className='m-auto' />:<ChevronUp className='m-auto'/>}</button>
+        </div>
+        <div className='w-full flex overflow-scroll' style={{height:"calc(100% - 120px)"}}>
+          <MapContentsCardList/>
         </div>
       </div>
   )
