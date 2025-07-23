@@ -7,9 +7,6 @@ export default function MapLayout({ children }: { children: ReactNode }) {
   return (
     <div className='w-full' style={{ height: "calc(100dvh - 60px)" }}>
         <SearchBox/>
-        <div className='w-full z-10' >
-            <Map/>
-        </div>
       <main>
         {children}
       </main>

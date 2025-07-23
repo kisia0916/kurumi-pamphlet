@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fd9853b4-c278-4e5a-b8bc-a92c35646e56",
+    "createdAt": "2025-07-23T14:29:33.824Z",
+    "type": "Building",
+    "x": 30,
+    "y": 35,
+    "building_id": "b79373d9-29ef-4b87-bf93-917839e250ed",
+    "project_id": null
+  },
+  {
+    "id": "f68b11ec-ee0c-4118-bcf8-619eafc3fd00",
+    "createdAt": "2025-07-23T14:29:57.967Z",
+    "type": "Building",
+    "x": 81,
+    "y": 52,
+    "building_id": "8b7ea340-2108-422d-a299-c351f8c280e8",
+    "project_id": null
+  },
+  {
+    "id": "fde92b19-d9e9-4532-b2a0-3d7c2be4cec5",
+    "createdAt": "2025-07-23T14:30:27.565Z",
+    "type": "Building",
+    "x": 40,
+    "y": 64,
+    "building_id": "73ed70b1-8316-402e-8f97-17298e9fdf76",
+    "project_id": null
+  },
+  {
+    "id": "4595a43a-0727-46f5-b370-c440985eb18c",
+    "createdAt": "2025-07-23T14:31:10.747Z",
+    "type": "Building",
+    "x": 78,
+    "y": 75,
+    "building_id": "ed6ce620-9d23-4f85-8623-e39f8cca5de3",
+    "project_id": null
+  },
+  {
+    "id": "8ef772a9-9842-4d3e-bf0e-15ac4cf0aa8f",
+    "createdAt": "2025-07-23T14:30:50.749Z",
+    "type": "Building",
+    "x": 70,
+    "y": 30,
+    "building_id": "b3215c36-7d56-491f-9083-de599dfd0650",
+    "project_id": null
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "backup-schema": "node scripts/backup-schema.js",
+    "restore-int-schema": "node scripts/restore-int-schema.js",
+    "restore-uuid-schema": "node scripts/restore-uuid-schema.js",
+    "export-data": "node scripts/export-data.js",
+    "import-data": "node scripts/import-data.js",
+    "migrate-to-uuid": "npm run backup-schema && npm run restore-int-schema && npm run export-data && npm run restore-uuid-schema && npx prisma migrate reset --force && npm run import-data"
+  }
+}

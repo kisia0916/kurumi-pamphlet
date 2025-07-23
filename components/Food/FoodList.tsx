@@ -8,6 +8,7 @@ type Props = {
 };
 
 function FoodList({ foods }: Props) {
+
   return (
     <div className='w-full '>
       <div className='w-full flex '>

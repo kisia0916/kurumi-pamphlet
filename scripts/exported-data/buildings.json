@@ -1,0 +1,37 @@
+[
+  {
+    "id": "b79373d9-29ef-4b87-bf93-917839e250ed",
+    "createdAt": "2025-07-23T12:19:59.617Z",
+    "name": "1号館",
+    "status": "empty",
+    "picture": "https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic//P1030545.png"
+  },
+  {
+    "id": "ed6ce620-9d23-4f85-8623-e39f8cca5de3",
+    "createdAt": "2025-07-23T12:21:56.214Z",
+    "name": "4号館",
+    "status": "hard",
+    "picture": "https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic//P1030548.png"
+  },
+  {
+    "id": "8b7ea340-2108-422d-a299-c351f8c280e8",
+    "createdAt": "2025-07-23T12:21:46.935Z",
+    "name": "3号館",
+    "status": "middle",
+    "picture": "https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic//P1030550.png"
+  },
+  {
+    "id": "b3215c36-7d56-491f-9083-de599dfd0650",
+    "createdAt": "2025-07-23T12:20:12.236Z",
+    "name": "2号館",
+    "status": "hard",
+    "picture": "https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic//P1030552.png"
+  },
+  {
+    "id": "73ed70b1-8316-402e-8f97-17298e9fdf76",
+    "createdAt": "2025-07-23T12:22:04.447Z",
+    "name": "校庭",
+    "status": "hard",
+    "picture": "https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic//P1030552.png"
+  }
+]

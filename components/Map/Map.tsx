@@ -1,19 +1,79 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import MapPin from './MapPin';
 import { Button } from '../ui/button';
 import { Minus, Plus } from 'lucide-react';
 
+// APIからのレスポンス型定義
+type BuildingPinResponse = {
+  id: number;
+  createdAt: string;
+  type: 'Building';
+  x: number;
+  y: number;
+  building_id: number | null;
+  project_id: number | null;
+  building: {
+    id: number;
+    name: string;
+    picture: string;
+    status: 'hard' | 'middle' | 'empty';
+    _count: {
+      projects: number;
+      floors: number;
+    };
+  } | null;
+};
+
+// Mapコンポーネント用のピン型
+type MapPinData = {
+  id: string;
+  label: string;
+  pic_url: string;
+  x: number;
+  y: number;
+};
+
 function Map() {
     const [selected, setSelected] = useState<string | null>(null);
+    const [buildingPins, setBuildingPins] = useState<MapPinData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // ピンのデータ（絶対座標ではなく画像に対する相対位置）
-    const pins = [
-    { id: '1', label: '1F 教室A', x: 38, y: 38 }, // x: 30%, y: 40%
-    { id: '2', label: '2F 音楽室', x: 66, y: 60 },
-    { id: '3', label: '2F 音楽室', x: 44, y: 54 },
-    { id: '3', label: '2F 音楽室', x: 63, y: 36 },
-    ];
+    useEffect(() => {
+      // APIからBuildingタイプのピンデータを取得
+      const fetchBuildingPins = async () => {
+        try {
+            const response = await fetch('/api/get_building_pins', {
+            headers: {
+              'Cache-Control': 'max-age=259200', // 3日(秒)
+            },
+            });
+          if (!response.ok) {
+            throw new Error('ピンデータの取得に失敗しました');
+          }
+          const data: BuildingPinResponse[] = await response.json();
+          
+          // APIレスポンスをMapPinData形式に変換
+          const pins: MapPinData[] = data.map(pin => ({
+            id: pin.id.toString(),
+            label: pin.building?.name || '不明な建物',
+            pic_url: pin.building?.picture || 'test.jpg',
+            x: pin.x,
+            y: pin.y,
+          }));
+          
+          setBuildingPins(pins);
+        } catch (err) {
+          console.error('建物ピン取得エラー:', err);
+          setError('ピンデータの読み込みに失敗しました');
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchBuildingPins();
+    }, []);
     
     
   return (
@@ -42,9 +102,26 @@ function Map() {
                 />
 
                 {/* ピン */}
-                {pins.map((pin,i) => (
-                    <MapPin key={i} pin={pin} setSelected={setSelected}/>
-                ))}
+                {loading ? (
+                  // ローディング中表示
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
+                  </div>
+                ) : error ? (
+                  // エラー表示
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500">
+                    {error}
+                  </div>
+                ) : buildingPins.length === 0 ? (
+                  // ピンがない場合
+                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
+                    ピンデータがありません
+                  </div>
+                ) : (
+                  // ピンの表示
+                  buildingPins.map((pin: MapPinData, i: number) => (
+                    <MapPin key={i} pin={pin} setSelected={setSelected} pic_url={pin.pic_url} pin_title={pin.label}/>
+                  ))
+                )}
             </div>
             </div>
         </TransformComponent>
