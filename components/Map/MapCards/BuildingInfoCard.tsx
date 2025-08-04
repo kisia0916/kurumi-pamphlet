@@ -1,50 +1,69 @@
 import { Badge } from '@/components/ui/badge'
-import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
+import { Building2, Calendar, Users } from 'lucide-react'
 import React from 'react'
+import BuildingFloorInfo from './BuildingFloorInfo'
 
-type Congestion = '空いている' | 'やや混雑' | '混雑';
-
-function BuildingInfoCard(props: {
-  id: number;
-  name: string;
-  content_num: number;
-  pic_url: string;
-  flower: number;
-  congestion: Congestion;
-}) {
-  const badgeColor =
-    props.congestion === '混雑'
-      ? 'bg-red-400'
-      : props.congestion === 'やや混雑'
-      ? 'bg-yellow-400'
-      : 'bg-green-400';
-
+function BuildingInfoCard() {
   return (
-    <Link href={`/map/B:${props.id}`} className='flex w-full h-17 mt-2 mb-4 justify-between no-underline'>
-      <div className='flex'>
-      <div className='w-18 h-17 bg-amber-300 rounded-[10px]'>
-        <img src={`${props.pic_url}`} className='w-full h-full object-cover rounded-[10px]' />
-      </div>
-      <div className='h-full ml-4 flex'>
-        <div className='m-auto'>
-        <span className='main-font-thin text-[20px] flex '>{props.name}</span>
-        <div className='flex mt-1'>
-          <Badge className={`mr-2 ${badgeColor}`}>
-          <span>{props.congestion}</span>
-          </Badge>
-          <span className='main-font-thin text-[14px] text-gray-500'>企画数:{props.content_num}</span>
-          <div className='w-[1px] h-4 bg-gray-500 m-auto ml-1 mr-1'></div>
-          <span className='main-font-thin text-[14px] text-gray-500'>階数:{props.flower}</span>
+    <div className='w-full flex'>
+      <div className='w-[96%] m-auto'>
+         <div className='w-full flex'>
+          <img src="/photos/P1030548.JPG" className='w-[98%] h-50 rounded-2xl mt-3 m-auto bg-amber-200 object-cover'/>
         </div>
-        </div>
+        <div className="w-full mt-4 flex">
+            <div className="w-full border-1 border-gray-300 rounded-2xl flex">
+              {/* Floor Count */}
+              <div className='w-full flex justify-around mt-4 mb-4'>
+                <div className="text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="p-2 bg-blue-100 rounded-full">
+                      <Building2 className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">階層数</p>
+                      <p className="text-lg font-bold text-gray-900">{7}階</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Project Count */}
+                <div className="text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="p-2 bg-purple-100 rounded-full">
+                      <Calendar className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">企画数</p>
+                      <p className="text-lg font-bold text-gray-900">{41}件</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="p-2 bg-orange-100 rounded-full">
+                      <Users className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">混雑度合</p>
+                      <Badge
+                        className={`bg-yellow-500 text-white text-xs px-2 py-1 rounded-full`}
+                      >
+                        {"中程度"}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>       
+      </div>
+      <div className='w-full mt-3'>
+        <BuildingFloorInfo/>
       </div>
       </div>
-      <div className='flex h-full'>
-      <ChevronRight className='m-auto mt-7'/>
-      </div>
-    </Link>
-  );
+    </div>
+  )
 }
 
 export default BuildingInfoCard

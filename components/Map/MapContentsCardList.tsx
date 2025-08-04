@@ -1,6 +1,7 @@
 import React from 'react'
-import BuildingInfoCard from './MapCards/BuildingInfoCard'
 import BuildingInfoCardSkeleton from './MapCards/BuildingInfoCardSkeleton'
+import BuildingInfoCardMini from './MapCards/BuildingInfoCardMini';
+import BuildingInfoCard from './MapCards/BuildingInfoCard';
 
 // APIから取得する建物データの型
 type Building = {
@@ -27,9 +28,10 @@ interface BuildingInfoListProps {
   buildings: Building[];
   loading: boolean;
   error: string | null;
+  content_type: "Home" | "Building" | "Floor" | "Project";
 }
 
-function BuildinginfoList({ buildings, loading, error }: BuildingInfoListProps) {
+function BuildinginfoList({ buildings, loading, error, content_type }: BuildingInfoListProps) {
 
   if (loading) {
     return (
@@ -49,21 +51,29 @@ function BuildinginfoList({ buildings, loading, error }: BuildingInfoListProps) 
 
   return (
     <div className='w-[90%] h-full m-auto'>
-      {buildings.length === 0 ? (
-        <div>表示する建物情報がありません</div>
-      ) : (
-        buildings.map(building => (
-          <BuildingInfoCard 
-            key={building.id}
-            id={building.id}
-            name={building.name} 
-            content_num={building._count.projects} 
-            pic_url={building.picture} 
-            flower={building._count.floors} 
-            congestion={statusToCongestion(building.status)} 
-          />
-        ))
-      )}
+      {content_type === "Home" ? (
+        buildings.length === 0 ? (
+          <div>表示する建物情報がありません</div>
+        ) : (
+          buildings.map(building => (
+            <BuildingInfoCardMini
+              key={building.id}
+              id={building.id}
+              name={building.name} 
+              content_num={building._count.projects} 
+              pic_url={building.picture} 
+              flower={building._count.floors} 
+              congestion={statusToCongestion(building.status)} 
+            />
+          ))
+        )
+      ) : content_type === "Building" ? (
+        <BuildingInfoCard/>
+      ) : content_type === "Floor" ? (
+        <span>hello Floor</span>
+      ) : content_type === "Project" ? (
+        <span>hello Project</span>
+      ) : null}
     </div>
   );
 }

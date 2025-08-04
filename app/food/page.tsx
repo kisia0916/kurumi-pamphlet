@@ -26,7 +26,8 @@ function page() {
 
   return (
     <div className='w-full overflow-hidden'>
-      <div className='w-full h-18 flex'>
+
+      <div className='w-full h-17 flex'>
         <p className='main-font-thin text-2xl m-auto ml-5'>食べ物</p>
       </div>
       <div className='w-full h-10 flex border-b border-gray-300 justify-around'>

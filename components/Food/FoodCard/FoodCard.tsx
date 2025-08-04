@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card-food'
 import type { FoodData } from '@prisma/client'
 import { AlertCircle, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 
 
@@ -25,12 +25,14 @@ function FoodCard({ food }: { food: FoodData }) {
         return null
     }
   }
-
+  useEffect(()=>{
+    console.log(food)
+  },[])
   return (
     <Card className="w-full overflow-hidden flex flex-col m-auto">
       <div className="relative h-30 w-[92%] m-auto">
         <Image
-          src={"/photos/food1.jpg"}
+          src={food.photo}
           alt={food.name}
           fill
           className="object-cover rounded-lg"
@@ -43,10 +45,12 @@ function FoodCard({ food }: { food: FoodData }) {
           ¥{food.price ? food.price.toLocaleString() : "N/A"}
         </p>
 
-        <div className="flex items-start gap-1 mb-3">
-          <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5" />
-          <div>
-            <p className="text-xs font-medium">アレルゲン:</p>
+        <div className="items-start gap-1 mb-3">
+          <div className='flex'>
+            <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5" />
+            <p className="text-xs font-medium">アレルゲン</p>
+          </div>
+          <div className='mt-2'>
             <div className="flex flex-wrap gap-1 mt-1">
               {food.allergens.map((allergen) => (
                 <Badge key={allergen} variant="outline" className="text-xs">
