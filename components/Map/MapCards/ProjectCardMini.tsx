@@ -4,22 +4,24 @@ import React from 'react'
 
 function ProjectCardMini() {
   return (
-    <div className='w-full h-17 flex mt-4 main-font-thin'>
-        <img src="/photos/food1.jpg" className='w-17 h-17 rounded-[10px] object-cover'/>
+    <div className='w-full flex mt-4 main-font-thin'>
+        <img src="/photos/35.jpeg" className='w-19 h-19 rounded-[10px] object-cover'/>
         <div className='h-full flex' style={{width: 'calc(100% - 80px)'}}>
-            <div className='m-auto ml-0 mr-0'>
-                <span className='text-[20px] ml-3'>けんじゃぶ</span>
-                <div className='flex mt-2'>
-                    <Badge className='flex ml-3 bg-gray-800'>
+            <div className='ml-3 mr-0'>
+                <p className='text-[20px]'>けんじゃぶ</p>
+                <p className='text-gray-500 text-[14px]'>1号館 2階 704教室</p>
+                <div className='flex mt-1'>
+                    <Badge className='flex rounded-full bg-gray-800'>
                         <MapPin />
                         <span>704</span>
                     </Badge>
-                    <Badge className='flex ml-1 bg-gray-800'>
+                    <Badge className='flex ml-1 rounded-full bg-gray-800'>
                         <UsersRound />
                         <span>テニス部</span>
                     </Badge>
                 </div>
             </div>
+
         </div>
         <div className='flex h-full'>
         <ChevronRight className='m-auto mt-7'/>

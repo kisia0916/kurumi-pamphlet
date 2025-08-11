@@ -2,6 +2,7 @@ import React from 'react'
 import BuildingInfoCardSkeleton from './MapCards/BuildingInfoCardSkeleton'
 import BuildingInfoCardMini from './MapCards/BuildingInfoCardMini';
 import BuildingInfoCard from './MapCards/BuildingInfoCard';
+import BuildingFloorDetailInfo from './MapCards/BuildingFloorDetailInfo';
 
 // APIから取得する建物データの型
 type Building = {
@@ -70,7 +71,7 @@ function BuildinginfoList({ buildings, loading, error, content_type }: BuildingI
       ) : content_type === "Building" ? (
         <BuildingInfoCard/>
       ) : content_type === "Floor" ? (
-        <span>hello Floor</span>
+        <BuildingFloorDetailInfo/>
       ) : content_type === "Project" ? (
         <span>hello Project</span>
       ) : null}

@@ -1,22 +1,53 @@
 import { Badge } from '@/components/ui/badge'
-import React from 'react'
+import React, { useState } from 'react'
 import MiniMap from '../MiniMap'
 import ProjectCardMini from './ProjectCardMini'
-import { ArrowBigLeft, ChevronRight } from 'lucide-react'
+import {  ChevronRight, ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 function BuildingFloorInfo() {
+  const [selectedFloor, setSelectedFloor] = useState('1階')
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  
+  const floors = ['1階', '2階', '3階', '4階', '5階']
+
   return (
     <div className='w-full'>
-        <div className='w-full flex h-12 justify-between'>
-            <span className='main-font-thin text-[25px] m-auto mr-0 ml-1 '>1階</span>
+        <div className='w-full flex h-12 justify-between items-center'>
+            <div className="relative">
+              <button 
+                className="flex items-center gap-2 text-[16px] main-font-thin bg-gradient-to-r bg-blue-400 text-white px-3 rounded-full transition-all duration-200 cursor-pointer mt-[12px] h-8"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                <span>{selectedFloor}</span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-24 overflow-hidden">
+                  {floors.map((floor) => (
+                    <button
+                      key={floor}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors"
+                      onClick={() => {
+                        setSelectedFloor(floor)
+                        setIsDropdownOpen(false)
+                      }}
+                    >
+                      {floor}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className='flex'>
-                <Badge className='rounded-full h-7 m-auto mt-[12px]  bg-blue-400 ml-1'>
+                <Badge className='rounded-full h-8 m-auto mt-[12px]  bg-blue-400 ml-1'>
                     <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
                 </Badge>
-                <Badge className='rounded-full h-7 m-auto mt-[12px] ml-1 bg-pink-400'>
+                <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 bg-pink-400'>
                     <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
                 </Badge>
-                <Badge className='rounded-full h-7 m-auto mt-[12px] ml-1 mr-0 bg-amber-400'>
+                <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 mr-0 bg-gray-400'>
                     <span>企画数 12</span>
                 </Badge>
             </div>
@@ -25,12 +56,10 @@ function BuildingFloorInfo() {
             <MiniMap/>
         </div>
         <div className='w-full flex mt-3'>
-            <button className='w-[99%] h-11 rounded-full bg-blue-200 m-auto flex border-[1px] border-blue-400'>
-                <div className='m-auto flex'>
-                    <span className='main-font-thin text-blue-800'>詳細</span>
-                    <ChevronRight className='m-auto mt-[1px] text-blue-800'/>
-                </div>
-            </button>
+            <Button className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-blue-400 text-[15px]'>
+                    <span className='main-font-thin'>詳細</span>
+                    <ChevronRight className='h-6 mt-[1px]'/>
+            </Button>
         </div>
         <div className='w-full h-20 '>
             <ProjectCardMini/>
