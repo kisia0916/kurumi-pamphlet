@@ -34,7 +34,7 @@ type MapPinData = {
   y: number;
 };
 
-function Map() {
+function Map(props:{map_img:string,map_pins:BuildingPinResponse[]|any[]}) {
     const [selected, setSelected] = useState<string | null>(null);
     const [buildingPins, setBuildingPins] = useState<MapPinData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -95,7 +95,7 @@ function Map() {
             <div className="w-full h-[300px] flex items-center justify-center">
             <div className="relative w-[100%] max-w-[100%] ">
                 <img
-                src="/map_data/map3.png"
+                src={props.map_img}
                 alt="School Map"
                 className="w-full h-full object-contain"
                 draggable={false}

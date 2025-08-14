@@ -17,7 +17,7 @@ type Building = {
 function page() {
   const router = useRouter();
   useEffect(() => {
-    router.replace('/map/H');
+    router.replace('/map/home');
   }, [router]);
   return (
     <></>

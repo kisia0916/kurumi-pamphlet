@@ -2,7 +2,7 @@
 import Map from '@/components/Map/Map'
 import SearchBox from '@/components/Map/SearchBox'
 import { ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, use, useEffect, useState } from 'react'
 import { TitleProvider, useTitle } from '@/contexts/TitleContext'
 import { useRouter } from 'next/navigation'
 
@@ -18,7 +18,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
     const targetRef = React.useRef<HTMLDivElement>(null);
     const barRef = React.useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(true);
-    const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded } = useTitle();
+    const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins } = useTitle();
     const router = useRouter();
     const change_size = () => {
       let newHeight = height;
@@ -75,12 +75,22 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
       el.removeEventListener("touchmove", handleTouchMove);
     };
   }, [handleChangeHeight]);
+
+  // useEffect(()=>{
+  //   if (now_height_type === 'high') {
+  //     setHeight("100px");
+  //   } else if (now_height_type === 'middle') {
+  //     setHeight("calc(100dvh - 60px - 40px)");
+  //   } else {
+  //     setHeight("calc(100dvh - 80px - 300px)");
+  //   }
+  // },[now_height_type, setHeight])
   return (
     <div className='w-full overflow-y-scroll' style={{ height: "calc(100dvh - 60px)" }}>
 
       <SearchBox/>
       <div className='w-full z-10' >
-        <Map/>
+        <Map map_img={mapImg} map_pins={mapPins}/>
       </div>
       <main>
         {/*メインメニュー*/}
@@ -111,7 +121,9 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
               {showBackButton && (
                 <button
                   className='w-8 h-8 mr-2  flex items-center justify-center'
-                  onClick={() => router.back()}
+                  onClick={() => {
+                    router.back()
+                  }}
                 >
                   <ArrowLeft className='w-6 h-6' />
                 </button>

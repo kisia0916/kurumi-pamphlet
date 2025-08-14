@@ -9,7 +9,7 @@ function BuildingInfoCard() {
     <div className='w-full flex'>
       <div className='w-[96%] m-auto'>
          <div className='w-full flex'>
-          <img src="/photos/P1030548.JPG" className='w-[98%] h-50 rounded-2xl mt-3 m-auto bg-amber-200 object-cover'/>
+          <img src="/photos/P1030548.JPG" className='w-[98%] h-50 rounded-2xl m-auto bg-amber-200 object-cover'/>
         </div>
         <div className="w-full mt-4 flex">
             <div className="w-full border-1 border-gray-300 rounded-2xl flex">

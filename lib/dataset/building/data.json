@@ -1,0 +1,28 @@
+[ 
+    {
+        "index":"1",
+        "name":"一号館",
+        "picture":"https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic/P1030545.png"
+    },
+
+    {
+        "index":"2",
+        "name":"二号館",
+        "picture":"https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic/P1030552.png"
+    },
+    {
+        "index":"3",
+        "name":"三号館",
+        "picture":"https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic/P1030550.png"
+    },
+    {
+        "index":"4",
+        "name":"四号館",
+        "picture":"https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic/P1030548.png"
+    },
+    {
+        "index":"4",
+        "name":"四号館",
+        "picture":"https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/buildingpic/P1030548.png"
+    }
+]

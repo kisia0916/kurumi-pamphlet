@@ -1,9 +1,10 @@
 import { Badge } from '@/components/ui/badge'
+import { useTitle } from '@/contexts/TitleContext';
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-type Congestion = '空いている' | 'やや混雑' | '混雑';
+type Congestion = "hard" | "middle" | "empty";
 
 function BuildingInfoCard(props: {
   id: number;
@@ -13,15 +14,26 @@ function BuildingInfoCard(props: {
   flower: number;
   congestion: Congestion;
 }) {
-  const badgeColor =
-    props.congestion === '混雑'
-      ? 'bg-red-400'
-      : props.congestion === 'やや混雑'
-      ? 'bg-yellow-400'
-      : 'bg-green-400';
+  const {setTitle} = useTitle();
+  const getStatusInfo = (congestion: Congestion) => {
+    switch (congestion) {
+      case 'hard':
+        return { color: 'bg-red-400', text: '混雑' };
+      case 'middle':
+        return { color: 'bg-yellow-400', text: '通常' };
+      case 'empty':
+        return { color: 'bg-green-400', text: '空いている' };
+      default:
+        return { color: 'bg-gray-400', text: '不明' };
+    }
+  };
+
+  const statusInfo = getStatusInfo(props.congestion);
 
   return (
-    <Link href={`/map/B${props.id}`} className='flex w-full h-17 mt-2 mb-4 justify-between no-underline'>
+    <Link onClick={()=>{
+      setTitle(props.name);
+    }} href={`/map/building/${props.id}`} className='flex w-full h-17 mt-2 mb-4 justify-between no-underline'>
       <div className='flex'>
       <div className='w-18 h-17 bg-amber-300 rounded-[10px]'>
         <img src={`${props.pic_url}`} className='w-full h-full object-cover rounded-[10px]' />
@@ -30,8 +42,8 @@ function BuildingInfoCard(props: {
         <div className='m-auto'>
         <span className='main-font-thin text-[20px] flex '>{props.name}</span>
         <div className='flex mt-1'>
-          <Badge className={`mr-2 ${badgeColor}`}>
-          <span>{props.congestion}</span>
+          <Badge className={`mr-2 ${statusInfo.color}`}>
+          <span>{statusInfo.text}</span>
           </Badge>
           <span className='main-font-thin text-[14px] text-gray-500'>企画数:{props.content_num}</span>
           <div className='w-[1px] h-4 bg-gray-500 m-auto ml-1 mr-1'></div>

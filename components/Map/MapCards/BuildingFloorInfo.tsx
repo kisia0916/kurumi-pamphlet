@@ -4,12 +4,28 @@ import MiniMap from '../MiniMap'
 import ProjectCardMini from './ProjectCardMini'
 import {  ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
+import { useTitle } from '@/contexts/TitleContext'
 
 function BuildingFloorInfo() {
   const [selectedFloor, setSelectedFloor] = useState('1階')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const router = useRouter()
+  const { title,setTitle } = useTitle();
   
   const floors = ['1階', '2階', '3階', '4階', '5階']
+
+  // 階層番号を抽出する関数
+  const getFloorNumber = (floorText: string) => {
+    return floorText.replace('階', '')
+  }
+
+  // 詳細ボタンのクリックハンドラー
+  const handleDetailClick = () => {
+    const floorId = getFloorNumber(selectedFloor)
+    setTitle(`${title} ${floorId}`)
+    router.push(`/map/floor/${floorId}階`)
+  }
 
   return (
     <div className='w-full'>
@@ -56,9 +72,12 @@ function BuildingFloorInfo() {
             <MiniMap/>
         </div>
         <div className='w-full flex mt-3'>
-            <Button className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-blue-400 text-[15px]'>
-                    <span className='main-font-thin'>詳細</span>
-                    <ChevronRight className='h-6 mt-[1px]'/>
+            <Button 
+              className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-blue-400 text-[15px]'
+              onClick={handleDetailClick}
+            >
+                <span className='main-font-thin'>詳細</span>
+                <ChevronRight className='h-6 mt-[1px]'/>
             </Button>
         </div>
         <div className='w-full h-20 '>

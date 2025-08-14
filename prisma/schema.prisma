@@ -66,7 +66,7 @@ model User {
   userId    String
 }
 
-enum BuildingStatus {
+enum BuildingStatusType {
   hard
   middle
   empty
@@ -75,12 +75,13 @@ enum BuildingStatus {
 model Buildings {
   id        String        @id @default(uuid())
   createdAt DateTime      @default(now())
+  index     Int
   name      String
-  status    BuildingStatus
   picture   String
   floors    Floor[]
   projects  Projects[]
   mapPins   MapPin[]
+  statusHistory BuildingStatus[]
 }
 
 model Floor {
@@ -125,3 +126,12 @@ model MapPin {
   building    Buildings? @relation(fields: [building_id], references: [id])
   project     Projects?  @relation(fields: [project_id], references: [id])
 }
+
+model BuildingStatus {
+  id          String         @id @default(uuid())
+  createdAt   DateTime       @default(now())
+  status      BuildingStatusType
+  building_id String
+  building    Buildings      @relation(fields: [building_id], references: [id])
+}
+

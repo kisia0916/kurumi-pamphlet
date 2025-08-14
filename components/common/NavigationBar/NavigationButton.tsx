@@ -13,7 +13,7 @@ function NavigationButton(props: {
 
   // ページ名からエンドポイントへのマッピング
   const pageToPath: Record<typeof props.page, string> = {
-    map: '/map/H',
+    map: '/map/home',
     food: '/food',
     stamp: '/stamp',
     timetable: '/timetable',
