@@ -32,7 +32,7 @@ function BuildingFloorInfo() {
         <div className='w-full flex h-12 justify-between items-center'>
             <div className="relative">
               <button 
-                className="flex items-center gap-2 text-[16px] main-font-thin bg-gradient-to-r bg-blue-400 text-white px-3 rounded-full transition-all duration-200 cursor-pointer mt-[12px] h-8"
+                className="flex items-center gap-2 text-[16px] main-font-thin bg-gradient-to-r bg-gray-400 text-white px-3 rounded-full transition-all duration-200 cursor-pointer mt-[12px] h-8"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <span>{selectedFloor}</span>
@@ -63,7 +63,7 @@ function BuildingFloorInfo() {
                 <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 bg-pink-400'>
                     <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
                 </Badge>
-                <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 mr-0 bg-gray-400'>
+                <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 mr-0 bg-amber-400'>
                     <span>企画数 12</span>
                 </Badge>
             </div>
@@ -73,7 +73,7 @@ function BuildingFloorInfo() {
         </div>
         <div className='w-full flex mt-3'>
             <Button 
-              className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-blue-400 text-[15px]'
+              className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-amber-400 text-[15px]'
               onClick={handleDetailClick}
             >
                 <span className='main-font-thin'>詳細</span>
@@ -84,8 +84,11 @@ function BuildingFloorInfo() {
             <ProjectCardMini/>
             <ProjectCardMini/>
             <ProjectCardMini/>
+        <div className='w-full h-5'>
 
         </div>
+        </div>
+
     </div>
   )
 }

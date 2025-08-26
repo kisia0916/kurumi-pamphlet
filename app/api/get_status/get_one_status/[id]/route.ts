@@ -3,17 +3,20 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function POST(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     console.log('🔍 Fetching specific building status data...')
     
-    // リクエストボディからIDを取得
-    const body = await request.json()
-    const { id } = body
+    // URLパラメータからIDを取得
+    const { id } = params
+
     if (!id) {
       return NextResponse.json({
         success: false,
-        message: 'Building ID is required in request body',
+        message: 'Building ID is required in URL parameter',
         timestamp: new Date().toISOString()
       }, { status: 400 })
     }

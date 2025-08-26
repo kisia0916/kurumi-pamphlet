@@ -22,6 +22,18 @@ enum FoodCategory {
   SUB
   DESSERT
 }
+
+enum ProjectGenre {
+  SHOP
+  STUDENT
+  DISPLAY_CHEMISTRY
+  DISPLAY_CULTURE
+  PERFORMANCE
+  MUSIC
+  FOOD
+  ACTIVITY
+}
+
 model FoodData {
   id         String    @id @default(uuid())
   createdAt  DateTime @default(now())
@@ -97,13 +109,16 @@ model Projects {
   id          String     @id @default(uuid())
   createdAt   DateTime  @default(now())
   name        String
-  tag         String[]
   picture     String
+  description String
   floor       Floor     @relation(fields: [floor_id], references: [id])
   floor_id    String
   building    Buildings @relation(fields: [building_id], references: [id])
   building_id String
-  mapPins     MapPin[]
+  room_name   String
+  project_genre ProjectGenre
+  map_pin_id  String?
+  mapPin      MapPin?   @relation(fields: [map_pin_id], references: [id])
 }
 
 enum PinType {
@@ -124,7 +139,7 @@ model MapPin {
   
   // リレーション定義
   building    Buildings? @relation(fields: [building_id], references: [id])
-  project     Projects?  @relation(fields: [project_id], references: [id])
+  projects    Projects[] // Projectsからのリレーション用
 }
 
 model BuildingStatus {
