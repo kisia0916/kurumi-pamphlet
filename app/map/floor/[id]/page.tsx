@@ -9,16 +9,8 @@ function page() {
   useEffect(() => {
     // パラメータに基づいてタイトルを設定
     setHeight("calc(100dvh - 60px - 80px - 120px)")
-    
-    // 一つ前のパスが/map以下のものかチェック
-    const referrer = document.referrer
-    const isFromMapRoute = referrer && new URL(referrer).pathname.startsWith('/map')
-    
-    if (isFromMapRoute) {
-      setShowBackButton(true)
-    } else {
-      setShowBackButton(false)
-    }
+    setShowBackButton(true)
+ 
   }, [ setTitle, setShowBackButton])
   return (
     <div className='w-full'>

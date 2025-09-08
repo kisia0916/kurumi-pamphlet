@@ -9,12 +9,8 @@ function page() {
   const isFromMapRoute = usePathname().startsWith('/map')
   useEffect(() => {
     setHeight("calc(100dvh - 60px - 80px)")
-    
-    if (isFromMapRoute) {
-      setShowBackButton(true)
-    } else {
-      setShowBackButton(false)
-    }
+    setShowBackButton(true)
+
 
   }, [ setTitle, setShowBackButton])
   return (

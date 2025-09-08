@@ -83,6 +83,7 @@ function BuildingInfoCard() {
     const [statusData, setStatusData] = useState<BuildingStatus[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [floor_list,set_floor_list] = useState<{floor:number,id:string}[]>([])
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -117,14 +118,14 @@ function BuildingInfoCard() {
         // データを状態に設定
         setBuildingData(buildingResult.data)
         setStatusData(statusResult.data)
-        
+        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id})).sort((a,b)=>a.floor-b.floor))
+
         // タイトルを建物名に設定
         if (buildingResult.data) {
           setTitle(buildingResult.data.name)
         }
 
       } catch (error) {
-        console.error('データの取得に失敗しました:', error);
         setError(error instanceof Error ? error.message : 'データの取得に失敗しました')
       } finally {
         setLoading(false)
@@ -235,7 +236,7 @@ function BuildingInfoCard() {
           </div>       
       </div>
       <div className='w-full mt-3'>
-        <BuildingFloorInfo/>
+        <BuildingFloorInfo floor_list={floor_list}/>
       </div>
       </div>
     </div>

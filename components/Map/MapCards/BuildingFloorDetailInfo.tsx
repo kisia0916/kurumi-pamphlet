@@ -1,15 +1,88 @@
 import { Badge } from '@/components/ui/badge'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProjectCardMini from './ProjectCardMini'
+import { Floor, Projects } from '@prisma/client'
+import { useParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 
-function BuildingFloorDetailInfo() {
+interface Floor_include_Building extends Floor {
+  building: {
+    id: string
+    createdAt: string    
+    index: number
+    name: string
+    picture: string
+  }
+}
 
+function BuildingFloorDetailInfo() {
+  const [project_list,set_project_list] = React.useState<Projects[]>([])
+  const [floorInfo,setFloorInfo] = useState<any | null>(null)
+  const [loading,setLoading] = useState(true)
+  const [error,setError] = useState<string | null>(null)
+  const { setTitle } = useTitle()
+  const floor_Id = useParams().id
+  useEffect(()=>{
+    const fetchAll = async () => {
+      try {
+        setLoading(true)
+        const [projectsRes, floorInfoRes] = await Promise.all([
+          fetch(`/api/get_floor_data/get_floor_project_list/${floor_Id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'force-cache',
+            next: { revalidate: 60 * 60 * 3 }
+          }),
+          fetch(`/api/get_floor_data/get_floor_info/${floor_Id}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+            cache: 'force-cache',
+            next: { revalidate: 60 * 60 * 3 }
+          })
+        ])
+
+        if (!projectsRes.ok) throw new Error('プロジェクト取得失敗')
+        if (!floorInfoRes.ok) throw new Error('階情報取得失敗')
+
+        const projectsJson = await projectsRes.json()
+        const floorInfoJson = await floorInfoRes.json()
+        const floorData:Floor_include_Building = floorInfoJson.data
+        set_project_list(projectsJson.data || [])
+        setFloorInfo(floorInfoJson || null)
+        setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
+      } catch (e:any) {
+        setError(e.message || '取得に失敗しました')
+        set_project_list([])
+        setFloorInfo(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (floor_Id) fetchAll()
+  },[floor_Id])
+
+  if (loading) {
+    return (
+      <div className='w-[90%] m-auto'>
+        <div className='animate-pulse space-y-4 mt-4'>
+          <div className='h-8 w-40 bg-gray-200 rounded-full' />
+          <div className='h-24 w-full bg-gray-200 rounded-xl' />
+          <div className='h-24 w-full bg-gray-200 rounded-xl' />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className='w-[90%] m-auto text-sm text-red-500'>エラー: {error}</div>
+    )
+  }
   return (
     <div className='w-[90%] m-auto'>
         <div className='w-full flex main-font-thin mt-1 '>
-            <Badge className='w-20 h-8 rounded-full bg-gray-400 text-black '>
-              <span className='text-white'>企画数 12</span>
+            <Badge className='w-fit px-4 h-8 rounded-full bg-gray-400 text-black '>
+              <span className='text-white'>企画数 {project_list.length}</span>
             </Badge>
             <Badge className='rounded-full h-8 bg-blue-400 ml-2'>
                 <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
@@ -19,12 +92,16 @@ function BuildingFloorDetailInfo() {
             </Badge>
         </div>
         <div className='w-full'>
-            <ProjectCardMini />
-            <ProjectCardMini />
-            <ProjectCardMini />
-            <ProjectCardMini />
-            <ProjectCardMini />
-            <ProjectCardMini />
+          {project_list.length === 0 ? (
+            <div className="w-full rounded-xl border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500 bg-gray-50 mt-5">
+              <p className='main-font-thin'>この階の登録された企画はまだありません。</p>
+              <p className='mt-1'>別の階を選択するか、後でもう一度確認してください。</p>
+            </div>
+          ) : (
+            project_list.map(project => (
+              <ProjectCardMini key={project.id} project={project} />
+            ))
+          )}
         </div>
     </div>
   )

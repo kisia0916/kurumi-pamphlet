@@ -70,7 +70,6 @@ export async function GET(
     return NextResponse.json({
       success: false,
       message: 'Failed to fetch building data',
-      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
   } finally {

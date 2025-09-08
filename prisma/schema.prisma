@@ -116,7 +116,7 @@ model Projects {
   building    Buildings @relation(fields: [building_id], references: [id])
   building_id String
   room_name   String
-  project_genre ProjectGenre
+  project_genre String
   map_pin_id  String?
   mapPin      MapPin?   @relation(fields: [map_pin_id], references: [id])
 }
