@@ -2,7 +2,7 @@
 import Map from '@/components/Map/Map'
 import SearchBox from '@/components/Map/SearchBox'
 import { ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
-import React, { ReactNode, use, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { TitleProvider, useTitle } from '@/contexts/TitleContext'
 import { useRouter } from 'next/navigation'
 
@@ -76,17 +76,10 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
     };
   }, [handleChangeHeight]);
 
-  // useEffect(()=>{
-  //   if (now_height_type === 'high') {
-  //     setHeight("100px");
-  //   } else if (now_height_type === 'middle') {
-  //     setHeight("calc(100dvh - 60px - 40px)");
-  //   } else {
-  //     setHeight("calc(100dvh - 80px - 300px)");
-  //   }
-  // },[now_height_type, setHeight])
+
+
   return (
-    <div className='w-full overflow-y-scroll' style={{ height: "calc(100dvh - 60px)" }}>
+    <div className='w-full' style={{ height: "calc(100dvh - 60px)" }}>
 
       <SearchBox/>
       <div className='w-full z-10' >
@@ -140,9 +133,12 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
             </button>
           </div>
           {/*メインメニュー*/}
-          <div className='w-full h-full flex'>
+            <div
+            className="w-full flex overflow-y-auto"
+            style={{ height: 'calc(100% - 128px)' }} // 24px (handle h-6) + 40px (top bar h-10)
+            >
             {children}
-          </div>
+            </div>
         </div>
       </main>
     </div>
