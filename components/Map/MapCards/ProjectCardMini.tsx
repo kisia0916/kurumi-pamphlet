@@ -3,7 +3,6 @@ import { Projects } from '@prisma/client'
 import { ChevronRight, MapPin, Pin, UsersRound } from 'lucide-react'
 import React from 'react'
 import Link from 'next/link'
-import { change_type } from '@/lib/change_type'
 import Image from 'next/image'
 
 function ProjectCardMini(props:{project:Projects}) {

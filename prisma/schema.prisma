@@ -150,3 +150,8 @@ model BuildingStatus {
   building    Buildings      @relation(fields: [building_id], references: [id])
 }
 
+model Project_tag{
+  id          String     @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  tag         String
+}
