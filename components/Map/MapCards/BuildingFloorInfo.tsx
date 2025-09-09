@@ -4,12 +4,24 @@ import MiniMap from '../MiniMap'
 import ProjectCardMini from './ProjectCardMini'
 import {  ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 import { Projects } from '@prisma/client'
 
 function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
+  const query = useSearchParams()
   const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string}>(() => {
+    if (query.get("floor")){
+      const floorParam = query.get("floor");
+      const floorNum = Number(floorParam);
+      if (Number.isInteger(floorNum)) {
+        if (floorNum>=props.floor_list[0].floor && floorNum<=props.floor_list[props.floor_list.length-1].floor){
+          const id = props.floor_list.find(f => f.floor === floorNum)?.id || '';
+          return { floor_text: floorNum < 0 ? `B${floorNum}階` : `${floorNum}階`, id };
+        }
+      }
+      
+    }
     const nums = (props.floor_list ?? []).map(f => f.floor)
     if (nums.length === 0) return {floor_text: '',id:'' }
     const positives = nums.filter(n => n > 0)
@@ -40,6 +52,8 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
     router.push(`/map/floor/${selectedFloor.id}`)
   }
   useEffect(()=>{
+
+
     const get_floor_project_data = async()=>{
       try {
         const project_data = await fetch(`/api/get_floor_data/get_floor_project_list/${selectedFloor.id}`, {

@@ -1,7 +1,6 @@
 "use client"
 import BuildingInfoCard from '@/components/Map/MapCards/BuildingInfoCard'
 import { useTitle } from '@/contexts/TitleContext'
-import { usePathname } from 'next/navigation'
 import React, { useEffect } from 'react'
 
 function page() {
