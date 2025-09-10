@@ -5,6 +5,22 @@ import { ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import React, { ReactNode, useEffect, useState } from 'react'
 import { TitleProvider, useTitle } from '@/contexts/TitleContext'
 import { useRouter } from 'next/navigation'
+import { Buildings, Floor } from '@prisma/client';
+
+export interface ProjectCardMiniProps {
+  id:string     
+  createdAt:Date;
+  name:string
+  picture: string ;
+  description: string ;
+  floor_id: string;
+  floor:Floor
+  building_id: string;
+  building:Buildings
+  room_name: string;
+  project_genre: string;
+  map_pin_id: string;
+}
 
 export default function MapLayout({ children }: { children: ReactNode }) {
   return (

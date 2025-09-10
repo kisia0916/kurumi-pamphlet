@@ -6,6 +6,7 @@ import { Buildings, Project_tag, Projects } from '@prisma/client'
 import BuildingInfoCard from './MapCards/BuildingInfoCardMini'
 import ProjectCardMini from './MapCards/ProjectCardMini'
 import { useTitle } from '@/contexts/TitleContext'
+import { ProjectCardMiniProps } from '@/app/map/layout'
 
 interface SuggestionItem {
   label: string
@@ -25,7 +26,8 @@ function SearchBox() {
   const [tagsOpen, setTagsOpen] = useState(true)
   const boxRef = useRef<HTMLDivElement|null>(null)
   const abortRef = useRef<AbortController|null>(null)
-  const [project_list,set_project_list] = useState<Projects[]>([])
+  const inputRef = useRef<HTMLInputElement|null>(null)
+  const [project_list,set_project_list] = useState<ProjectCardMiniProps[]>([])
   const [building_list,set_building_list] = useState<Buildings[]>([])
   const { setHeight } = useTitle();
 
@@ -53,6 +55,22 @@ function SearchBox() {
     setOpen(true)
   },[])
 
+  // 初期ロード時に URL の ?tags=foo,bar を読み込んで反映
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const tagsParam = params.get('tags')
+      if (tagsParam) {
+        const tags = tagsParam.split(',').map(t => t.trim()).filter(Boolean)
+        if (tags.length) {
+          setSelectedTags(prev => Array.from(new Set([...prev, ...tags])))
+          setOpen(true)
+          setTimeout(() => inputRef.current?.focus(), 0)
+        }
+      }
+    } catch {}
+  }, [])
+
   // タグをクエリに追加（重複は追加しない）
   const addTagToQuery = useCallback((tagTitle: string) => {
     setSelectedTags(prev => prev.includes(tagTitle) ? prev : [...prev, tagTitle])
@@ -63,6 +81,20 @@ function SearchBox() {
   const removeTag = useCallback((tagTitle: string) => {
     setSelectedTags(prev => prev.filter(t => t !== tagTitle))
   },[])
+
+  // 他コンポーネントからタグ追加イベントを受け取る（addTagToQuery 定義後に配置）
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const ce = e as CustomEvent<string | { tag: string }>
+      const tag = typeof ce.detail === 'string' ? ce.detail : ce.detail?.tag
+      if (!tag) return
+      addTagToQuery(tag)
+      setOpen(true)
+      setTimeout(() => inputRef.current?.focus(), 0)
+    }
+    window.addEventListener('search:addTag', handler as EventListener)
+    return () => window.removeEventListener('search:addTag', handler as EventListener)
+  }, [addTagToQuery])
 
   // 入力変化でサーバ検索 (300ms debounce)
   useEffect(()=>{
@@ -91,8 +123,8 @@ function SearchBox() {
           signal: ac.signal,
         })
         if (!res.ok) throw new Error('search failed')
-        const data:{buildings:Buildings[],projects:Projects[],query:string,phrases:string[]} = await res.json()
-        set_project_list(data.projects || [])
+        const data:{buildings:Buildings[],projects:ProjectCardMiniProps[],query:string,phrases:string[]} = await res.json()
+        set_project_list(data.projects)
         set_building_list(data.buildings || [])
         setSuggestions([])
       } catch(e){
@@ -170,6 +202,7 @@ function SearchBox() {
               onFocus={()=> { openWithDefault(); setHighlight(-1) }}
               onKeyDown={onKeyDown}
               placeholder="企画、参加団体を検索"
+              ref={inputRef}
               className="flex-1 min-w-[200px] h-full bg-transparent outline-none text-gray-700 placeholder-gray-400 text-[20px]"
             />
           </div>
@@ -209,7 +242,7 @@ function SearchBox() {
 
               {building_list.length>0?<div className='w-full mt-2'>
                 <div className='w-full flex'>
-                  <span className='main-font-thin text-xs text-gray-500 '>{`建物-1件`}</span>
+                  <span className='main-font-thin text-xs text-gray-500 '>{`建物-${building_list.length}件`}</span>
                 </div>
                 <div className='w-full'>
                     {building_list.map((building,i)=>(
@@ -228,12 +261,12 @@ function SearchBox() {
                 </div>: null}
                 {project_list.length>0?<div className='w-full mt-2'>
                   <div className='w-full flex'>
-                    <span className='main-font-thin text-xs text-gray-500'>{`企画-1件`}</span>
+                    <span className='main-font-thin text-xs text-gray-500'>{`企画-${project_list.length}件`}</span>
                   </div>
                   <div className='w-full'>
                     {project_list.map((project,i)=>(
                     <div key={i} className='mb-2' onClick={handleCardSelect}>
-                      <ProjectCardMini key={project.id} project={project} />
+                      <ProjectCardMini project={project} />
                     </div>
                   ))}
                 </div>

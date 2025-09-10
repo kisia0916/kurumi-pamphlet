@@ -6,7 +6,7 @@ import {  ChevronRight, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
-import { Projects } from '@prisma/client'
+import { ProjectCardMiniProps } from '@/app/map/layout'
 
 function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
   const query = useSearchParams()
@@ -31,7 +31,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
   const { title,setTitle } = useTitle();
-  const [project_list,set_project_list] = useState<Projects[]>([])
+  const [project_list,set_project_list] = useState<ProjectCardMiniProps[]>([])
   
   let floor_transform:{text:string,id:string}[] = []
   const floors = props.floor_list.map((floor)=>{
@@ -61,8 +61,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
           cache: 'force-cache'
         })
         const data_json = await project_data.json()
-        const projects:Projects[] = data_json.data
-        console.log(projects)
+        const projects:ProjectCardMiniProps[] = data_json.data
         set_project_list(Array.isArray(projects) ? projects : [])
       } catch (error) {
         set_project_list([])

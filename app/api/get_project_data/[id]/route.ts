@@ -12,10 +12,14 @@ export async function GET(  request: NextRequest,{ params }: { params: { id: str
             }, { status: 400 })
         }
 
-        const project_data = await prisma.projects.findFirst({
+    const project_data = await prisma.projects.findFirst({
             where: {
                 id
             },
+            include:{
+                building: true,
+                floor: true
+            }
         })
         return NextResponse.json({
             success: true,

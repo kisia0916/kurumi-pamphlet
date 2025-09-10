@@ -9,6 +9,10 @@ export async function GET(  request: NextRequest,{ params }: { params: { id: str
             const projects:Projects[] = await prisma.projects.findMany({
                 where:{
                     floor_id: id
+                },
+                include:{
+                    building: true,
+                    floor: true
                 }
             })
             return NextResponse.json({

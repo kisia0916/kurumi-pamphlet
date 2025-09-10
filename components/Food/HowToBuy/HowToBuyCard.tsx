@@ -11,7 +11,7 @@ function HowToBuyCard(props:{color:"blue"|"yellow"|"pink",number:number}) {
             </div>
             <div className={`w-[94%] rounded-2xl border-2 mt-7 ml-5 ${borderClass} flex`} >
                 <div className='flex mt-8 mb-3 w-[95%] m-auto'>
-                    <p>テストテストテストテストテストテストテストテストテストテストテストテストテスト</p>
+                    <p className='main-font-thin'>各購入口にて食券をご購入下さい</p>
                 </div>
             </div>
 

@@ -35,7 +35,7 @@ function page() {
           <span className='m-auto'>メニュー</span>
         </button>
         <button className={`w-[50%] flex h-full  ${now_page === "how_to_buy" ? "border-amber-300 border-b-2" : "border-b-1"}`} onClick={() => set_now_page("how_to_buy")}> 
-          <span className='m-auto'>食券の買い方</span>
+          <span className='m-auto'>食品の買い方</span>
         </button>
       </div>
       <div className="w-full flex overflow-y-scroll" style={{ height: "calc(100dvh - 170px)" }}>

@@ -4,6 +4,7 @@ import ProjectCardMini from './ProjectCardMini'
 import { Floor, Projects } from '@prisma/client'
 import { useParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
+import { ProjectCardMiniProps } from '@/app/map/layout'
 
 interface Floor_include_Building extends Floor {
   building: {
@@ -16,7 +17,7 @@ interface Floor_include_Building extends Floor {
 }
 
 function BuildingFloorDetailInfo() {
-  const [project_list,set_project_list] = React.useState<Projects[]>([])
+  const [project_list,set_project_list] = React.useState<ProjectCardMiniProps[]>([])
   const [floorInfo,setFloorInfo] = useState<any | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
@@ -47,7 +48,8 @@ function BuildingFloorDetailInfo() {
         const projectsJson = await projectsRes.json()
         const floorInfoJson = await floorInfoRes.json()
         const floorData:Floor_include_Building = floorInfoJson.data
-        set_project_list(projectsJson.data || [])
+        const projectData:ProjectCardMiniProps[] = projectsJson.data
+        set_project_list(projectData || [])
         setFloorInfo(floorInfoJson || null)
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
       } catch (e:any) {
