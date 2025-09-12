@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import React, { useEffect, useState } from 'react'
 import ProjectCardMini from './ProjectCardMini'
-import { Floor, Projects } from '@prisma/client'
+import { Floor } from '@prisma/client'
 import { useParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 import { ProjectCardMiniProps } from '@/app/map/layout'
@@ -21,7 +21,7 @@ function BuildingFloorDetailInfo() {
   const [floorInfo,setFloorInfo] = useState<any | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
-  const { setTitle } = useTitle()
+  const { setTitle,setMapImg } = useTitle()
   const floor_Id = useParams().id
   useEffect(()=>{
     const fetchAll = async () => {
@@ -51,6 +51,7 @@ function BuildingFloorDetailInfo() {
         const projectData:ProjectCardMiniProps[] = projectsJson.data
         set_project_list(projectData || [])
         setFloorInfo(floorInfoJson || null)
+        setMapImg(floorData.floor_map_img)
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
       } catch (e:any) {
         setError(e.message || '取得に失敗しました')

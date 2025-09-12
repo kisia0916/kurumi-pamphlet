@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
 
 export async function GET(request: NextRequest) {
   try {
     console.log('📊 Fetching all building status data...')
     
     // すべてのbuilding statusデータを取得（建物情報も含める）
-    const allStatus = await prisma.buildingStatus.findMany({
+    const allStatus = await prisma.buildingStatus.findMany({})
 
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
-
-    console.log(`✅ Successfully fetched ${allStatus.length} status records`)
 
     return NextResponse.json({
       success: true,
@@ -26,7 +19,7 @@ export async function GET(request: NextRequest) {
     }, { status: 200 })
     
   } catch (error) {
-    console.error('❌ Error fetching all building status data:', error)
+    console.error('❌ Error fetching all building status data')
     
     return NextResponse.json({
       success: false,

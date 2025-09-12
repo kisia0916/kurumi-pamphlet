@@ -34,7 +34,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
     const targetRef = React.useRef<HTMLDivElement>(null);
     const barRef = React.useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(true);
-    const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins } = useTitle();
+  const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins, mapZoom } = useTitle();
     const router = useRouter();
     const change_size = () => {
       let newHeight = height;
@@ -99,7 +99,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
 
       <SearchBox/>
       <div className='w-full z-10' >
-        <Map map_img={mapImg} map_pins={mapPins}/>
+        <Map map_img={mapImg} map_pins={mapPins} map_zoom={mapZoom}/>
       </div>
       <main>
         {/*メインメニュー*/}

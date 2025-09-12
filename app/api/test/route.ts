@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 // プロジェクトの project_genre を英語コード -> 日本語 表記へ一括変換するAPI

@@ -30,7 +30,6 @@ export async function GET() {
             id: true,
             name: true,
             picture: true,
-            status: true,
             _count: {
               select: {
                 projects: true,

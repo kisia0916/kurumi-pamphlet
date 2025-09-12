@@ -43,7 +43,9 @@ model FoodData {
   price      Int
   status     FoodStatus
   allergens  String[]
-  foodPlaces FoodPlace[]
+  food_place_id String
+  food_pace       FoodPlace?     @relation(fields: [food_place_id], references: [id])
+
 }
 
 model TimeTableContents {
@@ -103,7 +105,9 @@ model Floor {
   building    Buildings  @relation(fields: [building_id], references: [id])
   building_id String
   floor_num   Int
+  floor_map_img String
   projects    Projects[]
+  mapPins     MapPin[]
 }
 
 model Projects {
@@ -121,6 +125,7 @@ model Projects {
   map_pin_id  String?
   mapPin      MapPin?   @relation(fields: [map_pin_id], references: [id])
   foodPlaces  FoodPlace[]
+  team_name   String
 }
 
 enum PinType {
@@ -137,11 +142,14 @@ model MapPin {
   
   // リレーション - タイプに応じて参照するIDが異なる
   building_id String?
+  floor_id    String?
   project_id  String?
   
   // リレーション定義
   building    Buildings? @relation(fields: [building_id], references: [id])
+  floor       Floor?     @relation(fields: [floor_id], references: [id])
   projects    Projects[] // Projectsからのリレーション用
+
 }
 
 model BuildingStatus {
@@ -167,7 +175,5 @@ model FoodPlace {
   // 紐づく企画（屋台など）
   project     Projects   @relation(fields: [project_id], references: [id])
   project_id  String
-
-  // 提供フードとの関連（多対多）
-  foodData    FoodData[]
+  foods       FoodData[]
 }

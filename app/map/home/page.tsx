@@ -51,12 +51,13 @@ function page() {
           fetch('/api/get_buildings', {
             cache: 'force-cache',
             headers: {
-              'Cache-Control': 'max-age=259200', // 3日 = 259200秒
+              'Cache-Control': 'max-age=10800', // 3時間 = 10800秒
             },
           }),
           fetch('/api/get_status/get_all_status')
         ]);
-
+        console.log(buildingsResponse);
+        console.log(statusResponse);
         if (!buildingsResponse.ok) {
           throw new Error('建物データの取得に失敗しました');
         }

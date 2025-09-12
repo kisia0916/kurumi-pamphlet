@@ -4,14 +4,15 @@ import { useTitle } from '@/contexts/TitleContext'
 import React, { useEffect } from 'react'
 
 function page() {
-  const { setTitle, setShowBackButton, setHeight } = useTitle()
+  const { setTitle, setShowBackButton, setHeight,setMapZoom } = useTitle()
 
   useEffect(() => {
     // パラメータに基づいてタイトルを設定
-    setHeight("calc(100dvh - 60px - 80px - 120px)")
+    setHeight("calc(100dvh - 60px - 80px - 200px)")
     setShowBackButton(true)
+      setMapZoom(1.2)
  
-  }, [ setTitle, setShowBackButton])
+  }, [ setTitle, setShowBackButton,setMapZoom])
   return (
     <div className='w-full'>
         <BuildingFloorDetailInfo/>

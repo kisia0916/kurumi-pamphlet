@@ -1,6 +1,5 @@
-import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import type { ProjectGenre } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 // /api/search?q=word1,word2,... 複数語 OR 検索
 // 対象: Projects.name / Projects.room_name / Projects.project_genre / Buildings.name / Buildings.index
