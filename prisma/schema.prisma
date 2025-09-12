@@ -122,10 +122,10 @@ model Projects {
   building_id String
   room_name   String
   project_genre String
-  map_pin_id  String?
-  mapPin      MapPin?   @relation(fields: [map_pin_id], references: [id])
+
   foodPlaces  FoodPlace[]
   team_name   String
+  mapPins     MapPin[]
 }
 
 enum PinType {
@@ -148,7 +148,7 @@ model MapPin {
   // リレーション定義
   building    Buildings? @relation(fields: [building_id], references: [id])
   floor       Floor?     @relation(fields: [floor_id], references: [id])
-  projects    Projects[] // Projectsからのリレーション用
+  project     Projects?   @relation(fields: [project_id], references: [id])
 
 }
 

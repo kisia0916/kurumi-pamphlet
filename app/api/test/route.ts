@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cacheSuccessHeaders } from '../_utils/cacheHeaders';
 
 // プロジェクトの project_genre を英語コード -> 日本語 表記へ一括変換するAPI
 // 対応表:
@@ -64,7 +65,7 @@ export async function GET(req: NextRequest) {
         //         })
         //     }
         // }
-        // return NextResponse.json({ message: 'Conversion completed' });
+        // return NextResponse.json({ message: 'Conversion completed' }, { status: 200, headers: cacheSuccessHeaders });
 	} catch (e) {
 		console.error('convert-genre error', e);
 		return NextResponse.json({ error: 'internal_error' }, { status: 500 });

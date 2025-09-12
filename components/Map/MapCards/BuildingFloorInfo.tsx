@@ -8,41 +8,37 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 import { ProjectCardMiniProps } from '@/app/map/layout'
 
-function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
+function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:string}[]}) {
   const query = useSearchParams()
-  const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string}>(() => {
-    if (query.get("floor")){
-      const floorParam = query.get("floor");
-      const floorNum = Number(floorParam);
+  const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string,map_img:string}>(() => {
+    if (!props.floor_list || props.floor_list.length === 0) return { floor_text:'', id:'', map_img:'' }
+    const parseTxt = (n:number)=> n < 0 ? `B${n}階` : `${n}階`
+    const floorParam = query.get('floor')
+    if (floorParam) {
+      const floorNum = Number(floorParam)
       if (Number.isInteger(floorNum)) {
-        if (floorNum>=props.floor_list[0].floor && floorNum<=props.floor_list[props.floor_list.length-1].floor){
-          const id = props.floor_list.find(f => f.floor === floorNum)?.id || '';
-          return { floor_text: floorNum < 0 ? `B${floorNum}階` : `${floorNum}階`, id };
-        }
+        const found = props.floor_list.find(f=>f.floor === floorNum)
+        if (found) return { floor_text: parseTxt(found.floor), id: found.id, map_img: found.map_img }
       }
-      
     }
-    const nums = (props.floor_list ?? []).map(f => f.floor)
-    if (nums.length === 0) return {floor_text: '',id:'' }
-    const positives = nums.filter(n => n > 0)
-    const target = positives.length > 0 ? Math.min(...positives) : Math.min(...nums)
-    return {floor_text:target < 0 ? `B${target}階` : `${target}階`,id: props.floor_list.find(f=>f.floor===target)?.id || ''}
+    // デフォルト: 正の階の最小 or 全体の最小
+    const positives = props.floor_list.filter(f=>f.floor>0)
+    const target = (positives.length>0 ? positives : props.floor_list)
+      .reduce((a,b)=> a.floor < b.floor ? a : b)
+    return { floor_text: parseTxt(target.floor), id: target.id, map_img: target.map_img }
   })
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
   const { title,setTitle } = useTitle();
   const [project_list,set_project_list] = useState<ProjectCardMiniProps[]>([])
   
-  let floor_transform:{text:string,id:string}[] = []
-  const floors = props.floor_list.map((floor)=>{
-    if (floor.floor < 0){
-      floor_transform.push({text:`B${floor.floor}階`,id:floor.id})
-      return `B${floor.floor}階`
-    }else{
-      floor_transform.push({text:`${floor.floor}階`,id:floor.id})
-      return `${floor.floor}階`
-    }
-  })
+  // 一覧用に変換
+  const floor_transform = (props.floor_list||[]).map(f=> ({
+    text: f.floor < 0 ? `B${f.floor}階` : `${f.floor}階`,
+    id: f.id,
+    map_img: f.map_img
+  }))
+  const floors = floor_transform.map(f=>f.text)
 
 
 
@@ -56,10 +52,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
 
     const get_floor_project_data = async()=>{
       try {
-        const project_data = await fetch(`/api/get_floor_data/get_floor_project_list/${selectedFloor.id}`, {
-          next: { revalidate: 10800 }, // 3時間 (10800秒) キャッシュ
-          cache: 'force-cache'
-        })
+        const project_data = await fetch(`/api/get_floor_data/get_floor_project_list/${selectedFloor.id}`)
         const data_json = await project_data.json()
         const projects:ProjectCardMiniProps[] = data_json.data
         set_project_list(Array.isArray(projects) ? projects : [])
@@ -86,18 +79,19 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
               
               {isDropdownOpen && (
                 <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-24 overflow-hidden">
-                  {floors.map((floor) => (
-                    <button
-                      key={floor}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors"
-                      onClick={() => {
-                        setSelectedFloor({floor_text:floor,id:floor_transform.find(f=>f.text===floor)?.id || ''})
-                        setIsDropdownOpen(false)
-                      }}
-                    >
-                      {floor}
-                    </button>
-                  ))}
+                  {floors.map((floor) => {
+                    const found = floor_transform.find(f=>f.text===floor)
+                    return (
+                      <button
+                        key={floor}
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors"
+                        onClick={() => {
+                          if (found) setSelectedFloor({ floor_text: found.text, id: found.id, map_img: found.map_img })
+                          setIsDropdownOpen(false)
+                        }}
+                      >{floor}</button>
+                    )
+                  })}
                 </div>
               )}
             </div>
@@ -113,9 +107,9 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string}[]}) {
                 </Badge>
             </div>
         </div>
-        <div className='w-full'>
-            <MiniMap/>
-        </div>
+    <div className='w-full'>
+      <MiniMap map_img={selectedFloor.map_img}/>
+    </div>
         <div className='w-full flex mt-3'>
             <Button 
               className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-amber-400 text-[15px]'

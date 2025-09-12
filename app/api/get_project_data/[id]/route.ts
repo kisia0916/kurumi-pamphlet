@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { cacheSuccessHeaders } from '../../_utils/cacheHeaders';
 
 export async function GET(  request: NextRequest,{ params }: { params: { id: string } }) {
     try{
@@ -14,7 +15,7 @@ export async function GET(  request: NextRequest,{ params }: { params: { id: str
 
     const project_data = await prisma.projects.findFirst({
             where: {
-                id
+                id:id
             },
             include:{
                 building: true,
@@ -23,10 +24,8 @@ export async function GET(  request: NextRequest,{ params }: { params: { id: str
         })
         return NextResponse.json({
             success: true,
-            message: `Successfully fetched floor data for ID: ${id}`,
-            data: project_data?project_data:null,
-            timestamp: new Date().toISOString()
-        }, { status: 200 })
+            data: project_data?project_data:undefined,
+    }, { status: 200, headers: cacheSuccessHeaders })
     }catch(error){
         console.log(error)
         return NextResponse.json({

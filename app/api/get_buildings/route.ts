@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cacheSuccessHeaders } from '../_utils/cacheHeaders';
 import { prisma } from '@/lib/prisma';
 import { Buildings } from '@prisma/client';
 
@@ -42,7 +43,7 @@ export async function GET(): Promise<NextResponse<GetBuildingsResponse>> {
       createdAt: building.createdAt.toISOString()
     }));
 
-    return NextResponse.json(serializedBuildings);
+  return NextResponse.json(serializedBuildings, { status: 200, headers: cacheSuccessHeaders });
   } catch (error) {
     console.error('建物データ取得エラー:', error);
     return NextResponse.json({ error: '建物データの取得に失敗しました' }, { status: 500 });

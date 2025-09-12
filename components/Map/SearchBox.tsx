@@ -40,10 +40,7 @@ function SearchBox() {
     setHeight("100px")
     const get_tag_list = async () => {
       try {
-        const res = await fetch('/api/get_tag/get_all_tags', {
-          cache: 'force-cache',
-          next: { revalidate: 10800 },
-        })
+        const res = await fetch('/api/get_tag/get_all_tags')
         if (!res.ok) throw new Error('tag list fetch failed')
         const data:{tags:Project_tag[]} = await res.json()
         set_tag_list(data.tags || [])
@@ -118,11 +115,10 @@ function SearchBox() {
         setLoading(true)
         const q = encodeURIComponent(tokens.join(','))
         const res = await fetch(`/api/search?q=${q}`, {
-          cache: 'force-cache',
-          next: { revalidate: 10800 },
           signal: ac.signal,
         })
         if (!res.ok) throw new Error('search failed')
+
         const data:{buildings:Buildings[],projects:ProjectCardMiniProps[],query:string,phrases:string[]} = await res.json()
         set_project_list(data.projects)
         set_building_list(data.buildings || [])
@@ -132,7 +128,7 @@ function SearchBox() {
       } finally {
         setLoading(false)
       }
-    },400)
+    },800)
     return ()=> clearTimeout(handle)
   },[value,selectedTags,open,openWithDefault])
 

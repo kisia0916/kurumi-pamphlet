@@ -51,7 +51,7 @@ const handleCopy = () => {
                 </div>
                 <div className='w-full flex mt-2'>
                     <Users className='w-5 h-5 mr-[6px] mt-1 text-gray-800'/>
-                    <span className='main-font-thin mt-[2px] ml-2'>57R有志</span>
+                    <span className='main-font-thin mt-[2px] ml-2'>{props.project.team_name}</span>
                 </div>
             </div>
         </div>
@@ -76,6 +76,7 @@ const handleCopy = () => {
             <span className='main-font-thin text-xs'>共有リンクをコピー</span>
           </button>
         </div>
+        <div className='h-15'></div>
       </div>
     </div>
   )

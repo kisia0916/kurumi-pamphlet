@@ -40,10 +40,8 @@ function ProjectCardMini(props:{project:ProjectCardMiniProps}) {
               <Tag className='w-4 h-4 mr-0'/>
               <span onClick={onGenreClick} title='このジャンルで検索'>{project.project_genre}</span>
             </Badge>
-            <Badge className='flex ml-1 rounded-full bg-gray-800'>
-              <UsersRound className='w-4 h-4 mr-1'/>
-              <span></span>
-            </Badge>
+              <UsersRound className='w-4 h-4 mr-1 ml-2 mt-1'/>
+                <span className='main-font-thin text-[14px] max-w-[140px] truncate block mt-[1px]'>{project.team_name}</span>
           </div>
         </div>
       </div>

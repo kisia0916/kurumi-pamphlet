@@ -21,37 +21,34 @@ function BuildingFloorDetailInfo() {
   const [floorInfo,setFloorInfo] = useState<any | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
-  const { setTitle,setMapImg } = useTitle()
+  const { setTitle,setMapImg,setMapPins } = useTitle()
   const floor_Id = useParams().id
   useEffect(()=>{
     const fetchAll = async () => {
       try {
         setLoading(true)
-        const [projectsRes, floorInfoRes] = await Promise.all([
+        const [projectsRes, floorInfoRes,floorMapPins] = await Promise.all([
           fetch(`/api/get_floor_data/get_floor_project_list/${floor_Id}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'force-cache',
-            next: { revalidate: 60 * 60 * 3 }
           }),
           fetch(`/api/get_floor_data/get_floor_info/${floor_Id}`, {
             method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-            cache: 'force-cache',
-            next: { revalidate: 60 * 60 * 3 }
-          })
+          }),
+          fetch(`/api/get_map_pin/get_floor_project_pin/${floor_Id}` )
         ])
 
         if (!projectsRes.ok) throw new Error('プロジェクト取得失敗')
         if (!floorInfoRes.ok) throw new Error('階情報取得失敗')
-
+        if (!floorMapPins.ok) throw new Error('フロアマップピン取得失敗')
         const projectsJson = await projectsRes.json()
         const floorInfoJson = await floorInfoRes.json()
         const floorData:Floor_include_Building = floorInfoJson.data
         const projectData:ProjectCardMiniProps[] = projectsJson.data
+        const floorMapPinsData = await floorMapPins.json()
         set_project_list(projectData || [])
         setFloorInfo(floorInfoJson || null)
         setMapImg(floorData.floor_map_img)
+        setMapPins(floorMapPinsData.data || [])
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
       } catch (e:any) {
         setError(e.message || '取得に失敗しました')

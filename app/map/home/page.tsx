@@ -32,7 +32,7 @@ type BuildingStatus = {
 
 
 function page() {
-  const { setTitle, setShowBackButton,setHeight } = useTitle()
+  const { setTitle, setShowBackButton,setHeight,setMapImg,setMapZoom,setMapPins } = useTitle()
   
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [buildingStatuses, setBuildingStatuses] = useState<BuildingStatus[]>([]);
@@ -41,20 +41,18 @@ function page() {
 
   useEffect(() => {
     setTitle("校舎一覧");
+    setMapImg("https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/map1.png");
+    setMapZoom(1)
     setHeight("calc(100dvh - 80px - 300px)");
     const fetchElementData = async () => {
       try {
         setLoading(true);
         
         // 建物データとステータスデータを並行して取得
-        const [buildingsResponse, statusResponse] = await Promise.all([
-          fetch('/api/get_buildings', {
-            cache: 'force-cache',
-            headers: {
-              'Cache-Control': 'max-age=10800', // 3時間 = 10800秒
-            },
-          }),
-          fetch('/api/get_status/get_all_status')
+        const [buildingsResponse, statusResponse,mapPinResponse] = await Promise.all([
+          fetch('/api/get_buildings'),
+          fetch('/api/get_status/get_all_status'),
+          fetch('/api/get_map_pin/get_building_pin')
         ]);
         console.log(buildingsResponse);
         console.log(statusResponse);
@@ -65,16 +63,19 @@ function page() {
         if (!statusResponse.ok) {
           throw new Error('ステータスデータの取得に失敗しました');
         }
-
+        if (!mapPinResponse.ok) {
+          throw new Error('ピンデータの取得に失敗しました');
+        }
         const buildingsData = (await buildingsResponse.json()).reverse();
         const statusData = await statusResponse.json();
-
+        const mapPinData = await mapPinResponse.json();
         // buildingsDataをindexでソート（降順）
+        console.log(mapPinData);
         const sortedBuildings = buildingsData.sort((a: Building, b: Building) => a.index- b.index);
 
         setBuildings(sortedBuildings);
         setBuildingStatuses(statusData.data || []);
-        
+        setMapPins(mapPinData.data || []);
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データを読み込めませんでした');

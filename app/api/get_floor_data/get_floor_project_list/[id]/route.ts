@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { Projects } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { cacheSuccessHeaders } from '../../../_utils/cacheHeaders';
 
 export async function GET(  request: NextRequest,{ params }: { params: { id: string } }) {
     try{
@@ -20,7 +21,7 @@ export async function GET(  request: NextRequest,{ params }: { params: { id: str
                 message: `Successfully fetched building data for ID: ${id}`,
                 data: projects,
                 timestamp: new Date().toISOString()
-            }, { status: 200 })
+            }, { status: 200, headers: cacheSuccessHeaders })
         }else{
             return NextResponse.json({
                 success: false,

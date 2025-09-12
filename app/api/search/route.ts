@@ -11,8 +11,12 @@ export async function GET(request: NextRequest) {
         // カンマ区切り → trim → 空除去 → 重複削除 → 上限 10
         const phrases = [...new Set(qRaw.split(",").map(s => s.trim()).filter(Boolean))].slice(0, max_phrases);
 
+        const cacheHeaders = {
+            "Cache-Control": "public, max-age=3600, stale-while-revalidate=59",
+        };
+
         if (phrases.length === 0) {
-            return NextResponse.json({ query: qRaw, phrases: [], buildings: [], projects: [] });
+            return NextResponse.json({ query: qRaw, phrases: [], buildings: [], projects: [] }, { status: 200, headers: cacheHeaders });
         }
 
         const projectOr: any[] = [];
@@ -41,6 +45,7 @@ export async function GET(request: NextRequest) {
                     picture: true,
                     room_name: true,
                     project_genre: true,
+                    team_name: true,
                     building: { select: { id: true, name: true, index: true } },
                     floor: { select: { id: true, floor_num: true } }
                 }
@@ -51,7 +56,7 @@ export async function GET(request: NextRequest) {
             })
         ]);
 
-        return NextResponse.json({ query: qRaw, phrases, projects, buildings });
+    return NextResponse.json({ query: qRaw, phrases, projects, buildings }, { status: 200, headers: cacheHeaders });
     } catch (e) {
         console.error("/api/search error", e);
         return NextResponse.json({ error: "internal_error" }, { status: 500 });

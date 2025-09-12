@@ -15,7 +15,7 @@ function page() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/get_food", { cache: "force-cache", next: { revalidate: 300 } })
+    fetch("/api/get_food")
       .then((res) => res.json())
       .then((data: FoodData[]) => {
         setFoods(data);

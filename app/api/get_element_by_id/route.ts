@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cacheSuccessHeaders } from '../_utils/cacheHeaders';
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -46,7 +47,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "該当データが見つかりません" }, { status: 404 });
     }
 
-    return NextResponse.json(result);
+  return NextResponse.json({data:result}, { status: 200, headers: cacheSuccessHeaders });
   } catch (error) {
     console.error("要素取得APIエラー:", error);
     return NextResponse.json({ error: "データ取得に失敗しました" }, { status: 500 });

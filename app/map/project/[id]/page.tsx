@@ -4,25 +4,26 @@ import { useTitle } from '@/contexts/TitleContext';
 import { Projects } from '@prisma/client';
 import { useParams } from 'next/navigation';
 import React, { useEffect } from 'react'
+import { ProjectCardMiniProps } from '../../layout';
 
 function page() {
   const {id} = useParams();
-  const {setTitle} = useTitle()
-  const [project_data,set_project_data] = React.useState<Projects|null>(null)
+  const {setTitle,setMapZoom,setHeight,setMapImg,setShowBackButton} = useTitle()
+  const [project_data,set_project_data] = React.useState<ProjectCardMiniProps|null>(null)
   useEffect(()=>{
     const get_project_data = async()=>{
       try{
         setTitle("読み込み中...")
-        const get_data = await fetch(`/api/get_project_data/${id}`,{
-          next: { revalidate: 10800 }, // 3時間 (10800秒) キャッシュ
-          cache: 'force-cache'
-        })
+        setShowBackButton(true)
+        setHeight("calc(100dvh - 60px - 80px - 200px)")
+        const get_data = await fetch(`/api/get_project_data/${id}`)
         if (!get_data.ok) throw new Error('プロジェクト取得失敗')
         const data_json = await get_data.json()
-        const project:Projects = data_json.data
+        const project:ProjectCardMiniProps = data_json.data
         setTitle(project.name)
-        console.log(project)
         set_project_data(project)
+        setMapImg(project.floor.floor_map_img)
+        setMapZoom(1.2)
       }catch{
 
       }

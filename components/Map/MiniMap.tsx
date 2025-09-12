@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Minus } from 'lucide-react';
+
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import MapPin from './MapPin';
 
 type BuildingPinResponse = {
   id: number;
@@ -33,7 +31,7 @@ type MapPinData = {
   y: number;
 };
 
-function MiniMap() {
+function MiniMap(props:{map_img:string}) {
     const [selected, setSelected] = useState<string | null>(null);
     const [buildingPins, setBuildingPins] = useState<MapPinData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -43,11 +41,7 @@ function MiniMap() {
       // APIからBuildingタイプのピンデータを取得
       const fetchBuildingPins = async () => {
         try {
-            const response = await fetch('/api/get_building_pins', {
-            headers: {
-              'Cache-Control': 'max-age=259200', // 3日(秒)
-            },
-            });
+            const response = await fetch('/api/get_building_pins');
           if (!response.ok) {
             throw new Error('ピンデータの取得に失敗しました');
           }
@@ -79,7 +73,7 @@ function MiniMap() {
     <div className='w-full z-10'>
         <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2'>
             <TransformWrapper
-            initialScale={1}
+            initialScale={1.2}
             centerOnInit
             velocityAnimation={{ disabled: false }}
             >
@@ -87,7 +81,7 @@ function MiniMap() {
                 <div className="w-full h-[200px] flex items-center justify-center">
                 <div className="relative w-[100%] max-w-[100%] ">
                     <img
-                    src="/map_data/floor_map_2.png"
+                    src={props.map_img}
                     alt="School Map"
                     className="w-full h-full object-contain"
                     draggable={false}

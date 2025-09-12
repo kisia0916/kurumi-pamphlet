@@ -20,6 +20,7 @@ export interface ProjectCardMiniProps {
   room_name: string;
   project_genre: string;
   map_pin_id: string;
+  team_name: string;
 }
 
 export default function MapLayout({ children }: { children: ReactNode }) {

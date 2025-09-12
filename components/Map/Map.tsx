@@ -1,74 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
-import MapPin from './MapPin';
 import { Button } from '../ui/button';
 import { Minus, Plus } from 'lucide-react';
+import MapPin from './MapPin';
+import { MapPinData } from '@/contexts/TitleContext';
 
-type BuildingPinResponse = {
-  id: number;
-  createdAt: string;
-  type: 'Building';
-  x: number;
-  y: number;
-  building_id: number | null;
-  project_id: number | null;
-  building: {
-    id: number;
-    name: string;
-    picture: string;
-    status: 'hard' | 'middle' | 'empty';
-    _count: {
-      projects: number;
-      floors: number;
-    };
-  } | null;
-};
 
-type MapPinData = {
-  id: string;
-  label: string;
-  pic_url: string;
-  x: number;
-  y: number;
-};
 
-function Map(props:{map_img:string,map_pins:BuildingPinResponse[]|any[],map_zoom:number}) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const [buildingPins, setBuildingPins] = useState<MapPinData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
+function Map(props:{map_img:string,map_pins:MapPinData[],map_zoom:number}) {
   const zoomRef = useRef<ReactZoomPanPinchRef | null>(null)
   const imgRef = useRef<HTMLImageElement | null>(null)
-
-  useEffect(() => {
-    const fetchBuildingPins = async () => {
-      try {
-        const response = await fetch('/api/get_building_pins', {
-          headers: {
-            'Cache-Control': 'max-age=259200',
-          },
-        })
-        if (!response.ok) throw new Error('ピンデータの取得に失敗しました')
-        const data: BuildingPinResponse[] = await response.json()
-        const pins: MapPinData[] = data.map((pin) => ({
-          id: pin.id.toString(),
-          label: pin.building?.name || '不明な建物',
-          pic_url: pin.building?.picture || 'test.jpg',
-          x: pin.x,
-          y: pin.y,
-        }))
-        setBuildingPins(pins)
-      } catch (err) {
-        console.error('建物ピン取得エラー:', err)
-        setError('ピンデータの読み込みに失敗しました')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchBuildingPins()
-  }, [])
 
   // 親からの map_zoom 変更を中央基準で反映
   useEffect(() => {
@@ -79,6 +21,7 @@ function Map(props:{map_img:string,map_pins:BuildingPinResponse[]|any[],map_zoom
       console.error("zoomToElement エラー:", err)
     }
   }, [props.map_zoom])
+
 
   return (
     <div className='w-full z-10'>
@@ -119,33 +62,40 @@ function Map(props:{map_img:string,map_pins:BuildingPinResponse[]|any[],map_zoom
               />
 
               {/* ピン */}
-              {loading ? (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
-                </div>
-              ) : error ? (
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500">
-                  {error}
-                </div>
-              ) : buildingPins.length === 0 ? (
+              {props.map_pins.length === 0 ? (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
                   ピンデータがありません
                 </div>
-              ) : (
-                buildingPins.map((pin: MapPinData, i: number) => (
-                  <MapPin key={i} pin={pin} setSelected={setSelected} pic_url={pin.pic_url} pin_title={pin.label}/>
-                ))
+                ) : (
+                props.map_pins.map((pin: MapPinData, i: number) => {
+                  if (pin.type === 'Building') {
+                  return (
+                    <MapPin
+                    key={i}
+                    pin={pin}
+                    size='l'
+                    pic_url={pin.building?.picture}
+                    pin_title={pin.building?.name}
+                    />
+                  )
+                  }else if (pin.type === 'Room') {
+                  return (
+                    <MapPin
+                    key={i}
+                    pin={pin}
+                    size='s'
+                    room_name={pin.project?.room_name}
+                    // 必要に応じて表示したい情報へ変更してください
+                    pic_url={pin.project?.picture}
+                    pin_title={pin.project?.name}
+                    />
+                  )
+                  }})
               )}
             </div>
           </div>
         </TransformComponent>
       </TransformWrapper>
-
-      {selected && (
-        <div className="fixed bottom-10 left-10 bg-white p-4 shadow-md rounded z-50">
-          <p>{selected}</p>
-          <button onClick={() => setSelected(null)} className="mt-2 px-3 py-1 bg-gray-200 rounded">閉じる</button>
-        </div>
-      )}
     </div>
   )
 }

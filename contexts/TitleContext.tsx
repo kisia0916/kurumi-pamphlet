@@ -1,26 +1,23 @@
 "use client"
+import { Buildings, Floor, Projects } from '@prisma/client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// BuildingPinResponse型定義を追加
-type BuildingPinResponse = {
-  id: number;
+// BuildingPinResponse 型定義（UUIDを想定して string 型に統一）
+
+
+export interface MapPinData {
+  id: string;
   createdAt: string;
-  type: 'Building';
+  type: 'Building' | 'Room';
   x: number;
   y: number;
-  building_id: number | null;
-  project_id: number | null;
-  building: {
-    id: number;
-    name: string;
-    picture: string;
-    status: 'hard' | 'middle' | 'empty';
-    _count: {
-      projects: number;
-      floors: number;
-    };
-  } | null;
-};
+  building_id?: string
+  project_id?: string
+  floor_id?: string
+  building?: Buildings
+  floor?:Floor
+  project?:Projects
+}
 
 interface TitleContextType {
   title: string;
@@ -35,8 +32,9 @@ interface TitleContextType {
   setMapImg: (img: string) => void;
   mapZoom: number;
   setMapZoom: (zoom: number) => void;
-  mapPins: BuildingPinResponse[];
-  setMapPins: (pins: BuildingPinResponse[]) => void;
+  mapPins: MapPinData[];
+  setMapPins: (pins: MapPinData[]) => void;
+
 }
 
 const TitleContext = createContext<TitleContextType | undefined>(undefined);
@@ -48,7 +46,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/map1.png');
   const [mapZoom, setMapZoom] = useState<number>(1);
-  const [mapPins, setMapPins] = useState<BuildingPinResponse[]>([]);
+  const [mapPins, setMapPins] = useState<MapPinData[]>([]);
   return (
     <TitleContext.Provider value={{ 
       title, setTitle, 

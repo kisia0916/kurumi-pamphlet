@@ -13,7 +13,8 @@ interface Floor {
   id: string
   createdAt: Date
   building_id: string
-  floor_num: number
+  floor_num: number,
+  floor_map_img: string
 }
 
 interface Project {
@@ -83,7 +84,7 @@ function BuildingInfoCard() {
     const [statusData, setStatusData] = useState<BuildingStatus[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [floor_list,set_floor_list] = useState<{floor:number,id:string}[]>([])
+    const [floor_list,set_floor_list] = useState<{floor:number,id:string,map_img:string}[]>([])
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -91,17 +92,9 @@ function BuildingInfoCard() {
           setLoading(true)
           console.log(buildingId)
           const [buildingResponse,statusResponse] = await Promise.all([
-            fetch(`/api/get_building/${buildingId}`,{
-              headers: {
-            'Cache-Control': 'no-cache',
-              },
-            }),
+            fetch(`/api/get_building/${buildingId}`),
 
-            fetch(`/api/get_status/get_one_status/${buildingId}`,{
-              headers: {
-              'Cache-Control': 'no-cache',
-              },
-            })
+            fetch(`/api/get_status/get_one_status/${buildingId}`)
           ])
         if (!buildingResponse.ok) {
           throw new Error('建物データの取得に失敗しました');
@@ -118,7 +111,7 @@ function BuildingInfoCard() {
         // データを状態に設定
         setBuildingData(buildingResult.data)
         setStatusData(statusResult.data)
-        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id})).sort((a,b)=>a.floor-b.floor))
+        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img})).sort((a,b)=>a.floor-b.floor))
 
         // タイトルを建物名に設定
         if (buildingResult.data) {
