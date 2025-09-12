@@ -75,7 +75,7 @@ function page() {
 
         setBuildings(sortedBuildings);
         setBuildingStatuses(statusData.data || []);
-        setMapPins(mapPinData.data || []);
+        setMapPins({id:"",pin:mapPinData.data});
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データを読み込めませんでした');

@@ -32,8 +32,8 @@ interface TitleContextType {
   setMapImg: (img: string) => void;
   mapZoom: number;
   setMapZoom: (zoom: number) => void;
-  mapPins: MapPinData[];
-  setMapPins: (pins: MapPinData[]) => void;
+  mapPins: {id:string,pin:MapPinData[]};
+  setMapPins: (pins: {id:string,pin:MapPinData[]}) => void;
 
 }
 
@@ -46,7 +46,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/map1.png');
   const [mapZoom, setMapZoom] = useState<number>(1);
-  const [mapPins, setMapPins] = useState<MapPinData[]>([]);
+  const [mapPins, setMapPins] = useState<{id:string,pin:MapPinData[]}>({id:"",pin:[]});
   return (
     <TitleContext.Provider value={{ 
       title, setTitle, 

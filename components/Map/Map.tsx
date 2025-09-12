@@ -4,14 +4,14 @@ import { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import { Button } from '../ui/button';
 import { Minus, Plus } from 'lucide-react';
 import MapPin from './MapPin';
-import { MapPinData } from '@/contexts/TitleContext';
+import { MapPinData, useTitle } from '@/contexts/TitleContext';
 
 
 
-function Map(props:{map_img:string,map_pins:MapPinData[],map_zoom:number}) {
+function Map(props:{map_img:string,map_pins:{id:string,pin:MapPinData[]},map_zoom:number}) {
   const zoomRef = useRef<ReactZoomPanPinchRef | null>(null)
   const imgRef = useRef<HTMLImageElement | null>(null)
-
+  const {setMapPins} = useTitle()
   // 親からの map_zoom 変更を中央基準で反映
   useEffect(() => {
     if (!zoomRef.current || !imgRef.current) return
@@ -62,12 +62,12 @@ function Map(props:{map_img:string,map_pins:MapPinData[],map_zoom:number}) {
               />
 
               {/* ピン */}
-              {props.map_pins.length === 0 ? (
+              {props.map_pins.pin.length === 0 ? (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
                   ピンデータがありません
                 </div>
                 ) : (
-                props.map_pins.map((pin: MapPinData, i: number) => {
+                props.map_pins.pin.map((pin: MapPinData, i: number) => {
                   if (pin.type === 'Building') {
                   return (
                     <MapPin

@@ -22,10 +22,12 @@ function BuildingFloorDetailInfo() {
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
   const { setTitle,setMapImg,setMapPins } = useTitle()
-  const floor_Id = useParams().id
+  const params = useParams()
+  const floor_Id = Array.isArray(params.id) ? params.id[0] : params.id
   useEffect(()=>{
     const fetchAll = async () => {
       try {
+
         setLoading(true)
         const [projectsRes, floorInfoRes,floorMapPins] = await Promise.all([
           fetch(`/api/get_floor_data/get_floor_project_list/${floor_Id}`, {
@@ -46,9 +48,11 @@ function BuildingFloorDetailInfo() {
         const projectData:ProjectCardMiniProps[] = projectsJson.data
         const floorMapPinsData = await floorMapPins.json()
         set_project_list(projectData || [])
-        setFloorInfo(floorInfoJson || null)
         setMapImg(floorData.floor_map_img)
-        setMapPins(floorMapPinsData.data || [])
+        if (typeof floor_Id === 'string') {
+          setMapPins({ id: floor_Id, pin: floorMapPinsData.data || [] })
+        }
+        setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
       } catch (e:any) {
         setError(e.message || '取得に失敗しました')
