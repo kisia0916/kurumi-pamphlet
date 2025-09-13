@@ -1,14 +1,15 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import FoodCard from './FoodCard/FoodCard';
-import { FoodData } from '@prisma/client';
+import { FoodData, Projects } from '@prisma/client';
+import { Badge } from '../ui/badge';
+import FoodPlace from './FoodPlace/FoodPlace';
+import { FoodCardProps } from '@/app/food/page';
 
-type Props = {
-  foods: FoodData[];
-};
-
-function FoodList({ foods }: Props) {
-
+function FoodList(props:{foods:FoodCardProps[]}) {
+  useEffect(()=>{
+    console.log(props.foods)
+  },[])
   return (
     <div className='w-full main-font-thin'>
       <div className='w-full flex '>
@@ -16,18 +17,15 @@ function FoodList({ foods }: Props) {
           <p className='m-auto text-[15px]'>最終更新 12:30</p>
         </div>
       </div>
-      <div className='w-full flex px-3 mt-3'>
-          <div className='w-full'>
-            <p className='ml-1 text-[20px]'>学食</p>
-            <p className='text-[15px] text-gray-500'>一号館１階生徒ホール</p>
-          </div>
-      </div>
-      <div className='m-auto w-[94%] mt-5 grid grid-cols-2 gap-3 pb-8'>
+      {props.foods.length>0?props.foods.map((food_place) => (
+        <FoodPlace key={food_place.id} data={food_place}/>)):<></>}
 
-        {foods.map((food) => (
+      {/* <div className='m-auto w-[94%] mt-5 grid grid-cols-2 gap-3 pb-8'>
+
+        {props.foods.map((food) => (
           <FoodCard key={food.id} food={food} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

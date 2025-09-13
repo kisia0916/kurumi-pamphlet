@@ -115,7 +115,7 @@ function SearchBox() {
         setLoading(true)
         const q = encodeURIComponent(tokens.join(','))
         const res = await fetch(`/api/search?q=${q}`, {
-          signal: ac.signal,
+          // signal: ac.signal,
         })
         if (!res.ok) throw new Error('search failed')
 

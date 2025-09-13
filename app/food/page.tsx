@@ -3,22 +3,34 @@
 import FoodList from '@/components/Food/FoodList';
 import FoodListSkeleton from '@/components/Food/FoodListSkeleton';
 import HowToBuy from '@/components/Food/HowToBuy/HowToBuy';
-import { FoodData } from '@prisma/client';
+import { FoodData, FoodPlace, Projects } from '@prisma/client';
 import React, { useEffect, useState } from 'react';
 
 // PrismaのFoodData型をフロント用に定義
-
+export interface FoodCardProps {
+      id:string,
+      createdAt: string,
+      place:string,
+      project:{
+        id:string
+        room_name:string,
+        building:{id:string,name:string,index:number},
+        floor:{id:string,floor_num:number}
+      },
+      foods:FoodData[],
+}
 
 function page() {
   const [now_page, set_now_page] = useState<"menu" | "how_to_buy">("menu");
-  const [foods, setFoods] = useState<FoodData[]>([]);
+  const [foods, setFoods] = useState<FoodCardProps[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/get_food")
       .then((res) => res.json())
-      .then((data: FoodData[]) => {
-        setFoods(data);
+      .then((data: {data:FoodCardProps[]}) => {
+        console.log(data);
+        setFoods(data.data);
         setLoading(false);
       })
       .catch(() => setLoading(false));

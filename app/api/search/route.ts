@@ -24,6 +24,8 @@ export async function GET(request: NextRequest) {
                 projectOr.push({ name: { contains: p, mode: "insensitive" } });
                 projectOr.push({ room_name: { contains: p, mode: "insensitive" } });
                 projectOr.push({ project_genre: { contains: p, mode: "insensitive" } });
+                projectOr.push({ team_name: { contains: p, mode: "insensitive" } });
+
             }
 
         // Buildings 用 OR 条件生成
