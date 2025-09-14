@@ -11,6 +11,7 @@ export interface MapPinData {
   type: 'Building' | 'Room';
   x: number;
   y: number;
+  is_selected:boolean;
   building_id?: string
   project_id?: string
   floor_id?: string
@@ -34,6 +35,8 @@ interface TitleContextType {
   setMapZoom: (zoom: number) => void;
   mapPins: {id:string,pin:MapPinData[]};
   setMapPins: (pins: {id:string,pin:MapPinData[]}) => void;
+  now_page: "map" | "food" | "stamp" | "timetable";
+  set_now_page: (page: "map" | "food" | "stamp" | "timetable") => void;
 
 }
 
@@ -44,9 +47,10 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [height, setHeight] = useState<string>('calc(100dvh - 80px - 300px)');
   const [showBackButton, setShowBackButton] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/map1.png');
+  const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/loading_map.png');
   const [mapZoom, setMapZoom] = useState<number>(1);
   const [mapPins, setMapPins] = useState<{id:string,pin:MapPinData[]}>({id:"",pin:[]});
+  const [now_page, set_now_page] = useState<"map" | "food" | "stamp" | "timetable">("map");
   return (
     <TitleContext.Provider value={{ 
       title, setTitle, 
@@ -56,6 +60,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
       mapImg, setMapImg,
       mapZoom, setMapZoom,
       mapPins, setMapPins,
+      now_page, set_now_page,
     }}>
       {children}
     </TitleContext.Provider>

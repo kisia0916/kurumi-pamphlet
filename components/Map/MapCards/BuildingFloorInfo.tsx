@@ -108,7 +108,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
             </div>
         </div>
     <div className='w-full'>
-      <MiniMap map_img={selectedFloor.map_img}/>
+      <MiniMap map_img={selectedFloor.map_img} floor_id={selectedFloor.id}/>
     </div>
         <div className='w-full flex mt-3'>
             <Button 

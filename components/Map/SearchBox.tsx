@@ -14,6 +14,13 @@ interface SuggestionItem {
   id?: string
 }
 
+interface SearchResultBuilding{
+  id:string,
+  index:number,
+  name:string,
+  picture:string,
+  _count:{projects:number,floors:number}
+}
 
 function SearchBox() {
   const [value,setValue] = useState('')
@@ -28,12 +35,11 @@ function SearchBox() {
   const abortRef = useRef<AbortController|null>(null)
   const inputRef = useRef<HTMLInputElement|null>(null)
   const [project_list,set_project_list] = useState<ProjectCardMiniProps[]>([])
-  const [building_list,set_building_list] = useState<Buildings[]>([])
+  const [building_list,set_building_list] = useState<SearchResultBuilding[]>([])
   const { setHeight } = useTitle();
 
 
   // 型エラー回避のため any キャストしたラッパー
-  const BuildingInfoCardAny = BuildingInfoCard as any
 
   // 初期 (フォーカス時) はジャンル一覧
   const openWithDefault = useCallback(()=>{
@@ -119,9 +125,10 @@ function SearchBox() {
         })
         if (!res.ok) throw new Error('search failed')
 
-        const data:{buildings:Buildings[],projects:ProjectCardMiniProps[],query:string,phrases:string[]} = await res.json()
+        const data:{buildings:SearchResultBuilding[],projects:ProjectCardMiniProps[],query:string,phrases:string[]} = await res.json()
         set_project_list(data.projects)
         set_building_list(data.buildings || [])
+        console.log(data.buildings)
         setSuggestions([])
       } catch(e){
         if ((e as any).name !== 'AbortError') console.warn(e)
@@ -243,14 +250,7 @@ function SearchBox() {
                 <div className='w-full'>
                     {building_list.map((building,i)=>(
                       <div key={i} className='mb-2' onClick={handleCardSelect}>
-                        <BuildingInfoCardAny
-                          building={building}
-                          data={building}
-                          item={building}
-                          id={building.id}
-                          name={(building as any).name}
-                          code={(building as any).code}
-                        />
+                        <BuildingInfoCard id={building.id} name={building.name} content_num={building._count.projects} get_status={true} pic_url={building.picture} flower={building._count.floors} congestion='middle'/>
                       </div>
                     ))}
                 </div>

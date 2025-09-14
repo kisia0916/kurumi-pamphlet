@@ -40,21 +40,35 @@ export async function GET(request: NextRequest) {
 
         const [projects, buildings] = await Promise.all([
             prisma.projects.findMany({
-                where: { OR: projectOr },
-                select: {
-                    id: true,
-                    name: true,
-                    picture: true,
-                    room_name: true,
-                    project_genre: true,
-                    team_name: true,
-                    building: { select: { id: true, name: true, index: true } },
-                    floor: { select: { id: true, floor_num: true } }
-                }
+            where: { OR: projectOr },
+            select: {
+                id: true,
+                name: true,
+                picture: true,
+                room_name: true,
+                project_genre: true,
+                team_name: true,
+                floor_id: true,
+                building: { select: { id: true, name: true, index: true } },
+                floor: { select: { id: true, floor_num: true } }
+            }
             }),
             prisma.buildings.findMany({
-                where: { OR: buildingOr },
-                select: { id: true, name: true, index: true, picture: true }
+            where: { OR: buildingOr },
+            select: {
+                id: true,
+                name: true,
+                index: true,
+                picture: true,
+
+                
+                _count: {
+                select: {
+                    projects: true,
+                    floors: true
+                }
+                }
+            }
             })
         ]);
 

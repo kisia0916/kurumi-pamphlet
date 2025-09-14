@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { cacheSuccessHeaders } from '../../../_utils/cacheHeaders';
 
-export async function GET(  request: NextRequest,{ params }: { params: { id: string } }) {
+export async function GET(  request: NextRequest,{ params }: { params:  Promise<{ id: string }> }) {
     try{
-        const { id } = params
+        const { id } =await  params
         if (!id) {
             return NextResponse.json({
                 success: false,

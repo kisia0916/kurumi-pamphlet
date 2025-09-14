@@ -67,27 +67,29 @@ function Map(props:{map_img:string,map_pins:{id:string,pin:MapPinData[]},map_zoo
                   ピンデータがありません
                 </div>
                 ) : (
-                props.map_pins.pin.map((pin: MapPinData, i: number) => {
+        props.map_pins.pin.map((pin: MapPinData) => {
                   if (pin.type === 'Building') {
                   return (
                     <MapPin
-                    key={i}
+          key={pin.id}
                     pin={pin}
                     size='l'
                     pic_url={pin.building?.picture}
                     pin_title={pin.building?.name}
+                    is_set_floor_id={true}
                     />
                   )
                   }else if (pin.type === 'Room') {
                   return (
                     <MapPin
-                    key={i}
+          key={pin.id}
                     pin={pin}
                     size='s'
                     room_name={pin.project?.room_name}
                     // 必要に応じて表示したい情報へ変更してください
                     pic_url={pin.project?.picture}
                     pin_title={pin.project?.name}
+                    is_set_floor_id={true}
                     />
                   )
                   }})

@@ -1,11 +1,19 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useTitle } from '@/contexts/TitleContext'
+import { useEffect } from "react"
 
-function MapPin(props:{pin:any,pin_title?:string,pic_url?:string,size:"s"|"l",room_name?:string
+function MapPin(props:{pin:any,pin_title?:string,pic_url?:string,size:"s"|"l"|"ss",room_name?:string,is_set_floor_id:boolean
 }) {
   const router = useRouter()
+  const isLarge = props.size === 'l'
   const isSmall = props.size === 's'
+  const isMicro = props.size === 'ss'
+  const { mapPins, setMapPins } = useTitle()
+  useEffect(()=>{
+    console.log(mapPins)
+  },[mapPins])
   return (
 <button
     key={props.pin.id}
@@ -16,26 +24,38 @@ function MapPin(props:{pin:any,pin_title?:string,pic_url?:string,size:"s"|"l",ro
         left: `${props.pin.x}%`,
         transform: 'translate(-50%, -100%)',
     }}
+
     onClick={() => {
-      // 建物か部屋かで遷移先を分岐（必要に応じ調整）
+      const newPins = mapPins.pin.map((p)=>{
+        if (p.id === props.pin.id) {
+          return { ...p, is_selected: true };
+
+        }else{
+          return { ...p, is_selected: false };
+        }
+      })
+      if(props.is_set_floor_id){
+        setMapPins({id:props.pin.floor_id,pin:newPins})
+      }
       if (props.pin.type === 'Building' && props.pin.building_id) {
         router.push(`/map/building/${props.pin.building_id}`)
       } else if (props.pin.type === 'Room' && props.pin.project_id) {
-        router.push(`/map/project/${props.pin.project_id}`)
+        router.push(`/map/project/${props.pin.project_id}?floor=${props.pin.floor_id}`)
       }
     }}
     aria-label={props.pin.label}
 >
+  
     {/* 外側の青い円 + 中の黄色い円 */}
-    <div className={`w-15 ${isSmall ? 'scale-65 origin-bottom' : ''} transition-transform`}>
-      <div className='w-15 h-15 bg-blue-400 rounded-full relative shadow-lg flex items-center justify-center m-auto'>
+    <div className={`w-15 ${isSmall ? 'scale-65 origin-bottom' : ''} ${isMicro?'scale-50 origin-bottom' : ''} transition-transform`}>
+      <div className={`w-15 h-15 ${Boolean(props.pin?.is_selected) ? 'bg-amber-400' : 'bg-blue-400'} rounded-full relative shadow-lg flex items-center justify-center m-auto`}>
           <div className='w-14 h-14 rounded-full'>
             <img src={`${props.pic_url}`} className='object-cover w-full h-full rounded-full'/>
           </div>
-          <div className='w-3 h-3 bg-blue-400 rounded-full absolute mt-18 left-1/2 -translate-x-1/2 -translate-y-1/2' />
+          <div className={`w-3 h-3 ${Boolean(props.pin?.is_selected) ? 'bg-amber-400' : 'bg-blue-400'} rounded-full absolute mt-18 left-1/2 -translate-x-1/2 -translate-y-1/2`} />
       </div>
       <div className='w-full flex'>
-        <span className={`m-auto mt-[7px] main-font-thin ${isSmall ? 'text-[12px]' : 'text-[14px]'} text-white`}>{props.pin.type === "Room"?props.room_name:props.pin_title}</span>
+        <span className={`m-auto mt-[7px] main-font-thin ${isSmall ? 'text-[12px] text-white' : ''} ${isMicro ? 'text-[10px] text-black' : ''} ${isLarge ? 'text-[14px] text-white' : ''} `}>{props.pin.type === "Room"?props.room_name:props.pin_title}</span>
       </div>
     </div>
 </button>

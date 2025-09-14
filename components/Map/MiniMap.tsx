@@ -1,39 +1,26 @@
 import React, { useEffect, useState } from 'react';
 
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import MapPinComponent from './MapPin';
+import { Buildings, Floor,Projects } from '@prisma/client';
 
-type BuildingPinResponse = {
-  id: number;
-  createdAt: string;
-  type: 'Building';
-  x: number;
-  y: number;
-  building_id: number | null;
-  project_id: number | null;
-  building: {
-    id: number;
-    name: string;
-    picture: string;
-    status: 'hard' | 'middle' | 'empty';
-    _count: {
-      projects: number;
-      floors: number;
-    };
-  } | null;
-};
-
-// Mapコンポーネント用のピン型
-type MapPinData = {
+export interface MapPinData {
   id: string;
-  label: string;
-  pic_url: string;
+  createdAt: string;
+  type: 'Building' | 'Room';
   x: number;
   y: number;
-};
+  building_id?: string
+  project_id?: string
+  floor_id?: string
+  building?: Buildings
+  floor?:Floor
+  project?:Projects
+}
 
-function MiniMap(props:{map_img:string}) {
-    const [selected, setSelected] = useState<string | null>(null);
-    const [buildingPins, setBuildingPins] = useState<MapPinData[]>([]);
+
+function MiniMap(props:{map_img:string,floor_id:string}) {
+    const [miniMapPins, setMiniMapPins] = useState<MapPinData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -41,22 +28,13 @@ function MiniMap(props:{map_img:string}) {
       // APIからBuildingタイプのピンデータを取得
       const fetchBuildingPins = async () => {
         try {
-            const response = await fetch('/api/get_building_pins');
+            const response = await fetch(`/api/get_map_pin/get_floor_project_pin/${props.floor_id}`);
           if (!response.ok) {
             throw new Error('ピンデータの取得に失敗しました');
           }
-          const data: BuildingPinResponse[] = await response.json();
-          
-          // APIレスポンスをMapPinData形式に変換
-          const pins: MapPinData[] = data.map(pin => ({
-            id: pin.id.toString(),
-            label: pin.building?.name || '不明な建物',
-            pic_url: pin.building?.picture || 'test.jpg',
-            x: pin.x,
-            y: pin.y,
-          }));
-          
-          setBuildingPins(pins);
+          const data: {data:MapPinData[]} = await response.json();
+          console.log(data.data[0].project?.room_name)
+          setMiniMapPins(data.data)
         } catch (err) {
           console.error('建物ピン取得エラー:', err);
           setError('ピンデータの読み込みに失敗しました');
@@ -66,7 +44,7 @@ function MiniMap(props:{map_img:string}) {
       };
       
       fetchBuildingPins();
-    }, []);
+    }, [props.floor_id]);
     
     
   return (
@@ -88,7 +66,7 @@ function MiniMap(props:{map_img:string}) {
                     />
 
                     {/* ピン */}
-                    {/* {loading ? (
+                    {loading ? (
                     // ローディング中表示
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
                     </div>
@@ -97,31 +75,24 @@ function MiniMap(props:{map_img:string}) {
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-red-500">
                         {error}
                     </div>
-                    ) : buildingPins.length === 0 ? (
+                    ) : miniMapPins.length === 0 ? (
                     // ピンがない場合
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-500">
                         ピンデータがありません
                     </div>
                     ) : (
                     // ピンの表示
-                    buildingPins.map((pin: MapPinData, i: number) => (
-                        <MapPin key={i} pin={pin} setSelected={setSelected} pic_url={pin.pic_url} pin_title={pin.label}/>
+                    miniMapPins.map((pin:MapPinData, i: number) => (
+                        <MapPinComponent key={i} pin={pin}  pic_url={pin.project?.picture} pin_title={pin.project?.room_name} room_name={pin.project?.room_name} size="ss" is_set_floor_id={false}/>
                     ))
-                    )} */}
+                    )}
                 </div>
                 </div>
             </TransformComponent>
             </TransformWrapper>
         </div>
-        {/* <div className='w-full h-[160px] bg-gray-50 rounded-2xl border-[1px] border-gray-200'>
 
-        </div> */}
-        {selected && (
-            <div className="fixed bottom-10 left-10 bg-white p-4 shadow-md rounded z-50">
-            <p>{selected}</p>
-            <button onClick={() => setSelected(null)} className="mt-2 px-3 py-1 bg-gray-200 rounded">閉じる</button>
-            </div>
-        )}
+
 
     </div>
   )

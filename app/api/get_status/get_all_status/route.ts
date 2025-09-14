@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       data: allStatus,
       count: allStatus.length,
       timestamp: new Date().toISOString()
-  }, { status: 200, headers: cacheSuccessHeaders })
+  }, { status: 200})
     
   } catch (error) {
     console.error('❌ Error fetching all building status data')

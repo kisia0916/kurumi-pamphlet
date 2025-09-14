@@ -3,7 +3,7 @@ import Map from '@/components/Map/Map'
 import SearchBox from '@/components/Map/SearchBox'
 import { ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
 import React, { ReactNode, useEffect, useState } from 'react'
-import { TitleProvider, useTitle } from '@/contexts/TitleContext'
+import { useTitle } from '@/contexts/TitleContext'
 import { useRouter } from 'next/navigation'
 import { Buildings, Floor } from '@prisma/client';
 
@@ -25,9 +25,7 @@ export interface ProjectCardMiniProps {
 
 export default function MapLayout({ children }: { children: ReactNode }) {
   return (
-    <TitleProvider>
       <MapLayoutContent>{children}</MapLayoutContent>
-    </TitleProvider>
   )
 }
 

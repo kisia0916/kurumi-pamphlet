@@ -5,13 +5,12 @@ import { cacheSuccessHeaders } from '../../../_utils/cacheHeaders'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params:  Promise<{ id: string }>}
 ) {
   try {
-    console.log('🔍 Fetching specific building status data...')
     
     // URLパラメータからIDを取得
-    const { id } = params
+    const { id } = await  params
 
     if (!id) {
       return NextResponse.json({
@@ -41,16 +40,12 @@ export async function GET(
       }, { status: 404 })
     }
 
-    console.log(`✅ Successfully fetched ${statusData.length} status records for building ID: ${id}`)
 
     return NextResponse.json({
-      success: true,
-      message: `Successfully fetched ${statusData.length} status records for building ID: ${id}`,
       data: statusData,
-      count: statusData.length,
       buildingId: id,
       timestamp: new Date().toISOString()
-    }, { status: 200, headers: cacheSuccessHeaders })
+    }, { status: 200 })
     
   } catch (error) {
     console.error('❌ Error fetching building status data:', error)

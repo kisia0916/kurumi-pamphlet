@@ -6,7 +6,7 @@ import BuildingInfoCard from '@/components/Map/MapCards/BuildingInfoCardMini'
 
 // Building型の定義 - MapContentsListと互換性を持たせる
 type Building = {
-  id: number;
+  id: string;
   index: number;
   name: string;
   status: 'hard' | 'middle' | 'empty';
@@ -47,7 +47,7 @@ function page() {
     const fetchElementData = async () => {
       try {
         setLoading(true);
-        
+        setMapPins({id:"",pin:[]});
         // 建物データとステータスデータを並行して取得
         const [buildingsResponse, statusResponse,mapPinResponse] = await Promise.all([
           fetch('/api/get_buildings'),
@@ -68,14 +68,15 @@ function page() {
         }
         const buildingsData = (await buildingsResponse.json()).reverse();
         const statusData = await statusResponse.json();
-        const mapPinData = await mapPinResponse.json();
+  const mapPinData = await mapPinResponse.json();
+  // is_selected を初期化して付与
+  const pinsWithSelection = (mapPinData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
         // buildingsDataをindexでソート（降順）
-        console.log(mapPinData);
         const sortedBuildings = buildingsData.sort((a: Building, b: Building) => a.index- b.index);
 
         setBuildings(sortedBuildings);
         setBuildingStatuses(statusData.data || []);
-        setMapPins({id:"",pin:mapPinData.data});
+  setMapPins({id:"",pin:pinsWithSelection});
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データを読み込めませんでした');
@@ -95,7 +96,7 @@ function page() {
   }, [loading, error, buildings, setTitle, setShowBackButton]);
 
   // building_idに基づいて最新のステータスを取得する関数
-  const getLatestStatus = (buildingId: number): 'hard' | 'middle' | 'empty' => {
+  const getLatestStatus = (buildingId: string): 'hard' | 'middle' | 'empty' => {
     // 該当する建物のステータスを取得（building_idは文字列なので変換）
     const buildingStatusList = buildingStatuses.filter(
       status => status.building_id === buildingId.toString()
@@ -132,6 +133,7 @@ function page() {
                   pic_url={building.picture}
                   flower={building._count.floors}
                   content_num={building._count.projects}
+                  get_status={false}
                 />
               ))
             )}

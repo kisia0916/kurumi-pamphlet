@@ -1,15 +1,11 @@
 
 import React, { useEffect } from 'react';
 import FoodCard from './FoodCard/FoodCard';
-import { FoodData, Projects } from '@prisma/client';
-import { Badge } from '../ui/badge';
 import FoodPlace from './FoodPlace/FoodPlace';
-import { FoodCardProps } from '@/app/food/page';
+import { FoodCardInterface } from '@/app/food/page';
 
-function FoodList(props:{foods:FoodCardProps[]}) {
-  useEffect(()=>{
-    console.log(props.foods)
-  },[])
+function FoodList(props:{foods:FoodCardInterface[]}) {
+
   return (
     <div className='w-full main-font-thin'>
       <div className='w-full flex '>

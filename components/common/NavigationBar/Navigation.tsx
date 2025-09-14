@@ -1,9 +1,20 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import NavigationButton from './NavigationButton';
+import { useTitle } from '@/contexts/TitleContext';
+import { usePathname } from 'next/navigation';
 
 function Navigation() {
-    const [now_page,set_now_page] = useState<"map" | "food" | "stamp" | "timetable">("map");
+  const { now_page, set_now_page } = useTitle();
+    const pathname = usePathname();
+
+    useEffect(() => {
+      if (!pathname) return;
+      if (pathname.startsWith('/map')) set_now_page('map');
+      else if (pathname.startsWith('/food')) set_now_page('food');
+      else if (pathname.startsWith('/stamp')) set_now_page('stamp');
+      else if (pathname.startsWith('/timetable')) set_now_page('timetable');
+    }, [pathname, set_now_page]);
   return (
     <nav style={{
       position: 'fixed',

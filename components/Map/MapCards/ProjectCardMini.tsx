@@ -8,6 +8,7 @@ import { ProjectCardMiniProps } from '@/app/map/layout'
 
 function ProjectCardMini(props:{project:ProjectCardMiniProps}) {
   const { project } = props
+  console.log(project)
   const onGenreClick: React.MouseEventHandler<HTMLSpanElement> = (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -19,7 +20,7 @@ function ProjectCardMini(props:{project:ProjectCardMiniProps}) {
   }
   return (
     <Link 
-      href={`/map/project/${project.id}`}
+      href={`/map/project/${project.id}?floor=${project.floor_id}`}
       className='w-full flex mt-4 main-font-thin'
     >
     <Image

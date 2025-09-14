@@ -28,6 +28,7 @@ const handleCopy = () => {
       }, 3000)
     })
   }
+
   return (
     <div className='w-full flex'>
       <div className='w-[90%] m-auto mt-0'>

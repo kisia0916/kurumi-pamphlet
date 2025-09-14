@@ -50,7 +50,8 @@ function BuildingFloorDetailInfo() {
         set_project_list(projectData || [])
         setMapImg(floorData.floor_map_img)
         if (typeof floor_Id === 'string') {
-          setMapPins({ id: floor_Id, pin: floorMapPinsData.data || [] })
+          const pinsWithSelection = (floorMapPinsData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
+          setMapPins({ id: `${floor_Id}`, pin: pinsWithSelection })
         }
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
@@ -62,6 +63,7 @@ function BuildingFloorDetailInfo() {
         setLoading(false)
       }
     }
+
     if (floor_Id) fetchAll()
   },[floor_Id])
 

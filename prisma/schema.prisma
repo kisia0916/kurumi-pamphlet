@@ -45,7 +45,7 @@ model FoodData {
   allergens  String[]
   food_place_id String
   food_pace       FoodPlace?     @relation(fields: [food_place_id], references: [id])
-
+  food_index      Int?
 }
 
 model TimeTableContents {
