@@ -71,6 +71,7 @@ function page() {
 
         setBuildings(sortedBuildings);
         setMapPins({id:"",pin:pinsWithSelection});
+        setLoading(false);
 
         const statusResponse = await fetch('/api/get_status/get_all_status')
         if (!statusResponse.ok) {
@@ -83,8 +84,6 @@ function page() {
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データを読み込めませんでした');
-      } finally {
-        setLoading(false);
       }
     };
     
@@ -132,7 +131,7 @@ function page() {
                   key={building.id}
                   id={building.id}
                   name={building.name}
-                  congestion={getLatestStatus(building.id)}
+                  congestion={buildingStatuses.length>0?getLatestStatus(building.id):"loading"}
                   pic_url={building.picture}
                   flower={building._count.floors}
                   content_num={building._count.projects}
