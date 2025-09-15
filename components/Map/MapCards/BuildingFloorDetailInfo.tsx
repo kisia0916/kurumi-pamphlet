@@ -108,6 +108,7 @@ function BuildingFloorDetailInfo() {
               <ProjectCardMini key={project.id} project={project} />
             ))
           )}
+          <div className='h-4'></div>
         </div>
     </div>
   )
