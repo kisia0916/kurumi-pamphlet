@@ -49,25 +49,20 @@ function page() {
         setLoading(true);
         setMapPins({id:"",pin:[]});
         // 建物データとステータスデータを並行して取得
-        const [buildingsResponse, statusResponse,mapPinResponse] = await Promise.all([
+        const [buildingsResponse,mapPinResponse] = await Promise.all([
           fetch('/api/get_buildings'),
-          fetch('/api/get_status/get_all_status'),
           fetch('/api/get_map_pin/get_building_pin')
         ]);
         console.log(buildingsResponse);
-        console.log(statusResponse);
         if (!buildingsResponse.ok) {
           throw new Error('建物データの取得に失敗しました');
         }
 
-        if (!statusResponse.ok) {
-          throw new Error('ステータスデータの取得に失敗しました');
-        }
+
         if (!mapPinResponse.ok) {
           throw new Error('ピンデータの取得に失敗しました');
         }
         const buildingsData = (await buildingsResponse.json()).reverse();
-        const statusData = await statusResponse.json();
         const mapPinData = await mapPinResponse.json();
         // is_selected を初期化して付与
         const pinsWithSelection = (mapPinData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
@@ -75,8 +70,16 @@ function page() {
         const sortedBuildings = buildingsData.sort((a: Building, b: Building) => a.index- b.index);
 
         setBuildings(sortedBuildings);
+        setMapPins({id:"",pin:pinsWithSelection});
+
+        const statusResponse = await fetch('/api/get_status/get_all_status')
+        if (!statusResponse.ok) {
+          throw new Error('ステータスデータの取得に失敗しました');
+        }
+        const statusData = await statusResponse.json();
+
         setBuildingStatuses(statusData.data || []);
-  setMapPins({id:"",pin:pinsWithSelection});
+
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データを読み込めませんでした');
