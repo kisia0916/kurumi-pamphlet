@@ -35,7 +35,7 @@ function ProjectCardMini(props:{project:ProjectCardMiniProps}) {
       <div className='h-full flex grow' style={{width: 'calc(100% - 80px)'}}>
         <div className='ml-3 mr-0 grow'>
           <p className='text-[20px] line-clamp-1'>{project.name}</p>
-          <p className='text-gray-500 text-[14px]'>{project.building.name} {project.floor.floor_num}階 {project.room_name}教室</p>
+          <p className='text-gray-500 text-[14px]'>{project.building.name} {project.floor.floor_num}階 {project.room_name}</p>
           <div className='flex mt-1'>
             <Badge className='flex rounded-full bg-gray-800'>
               <Tag className='w-4 h-4 mr-0'/>

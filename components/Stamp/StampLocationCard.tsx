@@ -4,15 +4,15 @@ import React from 'react'
 import { Button } from "@/components/ui/button"
 import { MapPin, Map, Play, HelpCircle, Camera, QrCode } from 'lucide-react'
 import Image from 'next/image'
-import { Badge } from '../ui/badge'
 import { Card, CardContent } from '../ui/card'
+import { useRouter } from 'next/navigation'
 
 interface StampLocationCardProps {
   stampNumber: number
   locationName: string
   photoPath: string
-  acquisitionMethod: 'quiz' | 'video' | 'qr' | 'photo'
-  onOpenMap?: () => void
+  acquisitionMethod: string
+  mapPath?: string
 }
 
 const StampLocationCard: React.FC<StampLocationCardProps> = ({
@@ -20,8 +20,9 @@ const StampLocationCard: React.FC<StampLocationCardProps> = ({
   locationName,
   photoPath,
   acquisitionMethod,
-  onOpenMap
+  mapPath
 }) => {
+  const router = useRouter();
   const getAcquisitionMethodIcon = () => {
     switch (acquisitionMethod) {
       case 'quiz':
@@ -75,8 +76,8 @@ const StampLocationCard: React.FC<StampLocationCardProps> = ({
   }
 
   return (
-    <Card>
-        <CardContent className='p-0'>
+    <Card className='border-[1px] border-gray-200 h-full flex flex-col'>
+        <CardContent className='p-0 h-full flex flex-col'>
         <div className="w-full h-25 relative">
           <Image
             src={photoPath}
@@ -85,13 +86,13 @@ const StampLocationCard: React.FC<StampLocationCardProps> = ({
             className="object-cover rounded-t-md"
             sizes="100vw"
           />
-          <div className={`absolute ${getBadgeColor()} rounded-tl-md rounded-br-[5px] px-3 py-1 text-xs font-bold text-white shadow`}>
+          <div className={`absolute bg-amber-300 rounded-tl-md rounded-br-[5px] px-3 py-1 text-xs font-bold text-gray-700 shadow `}>
             {stampNumber}
           </div>
         </div>
         
         {/* 情報部分 */}
-        <div className="p-3">
+        <div className="p-3 flex flex-col flex-1">
           <h3 className="text-sm font-semibold text-gray-800 mb-0.5 main-font-thin">
             {locationName}
           </h3>
@@ -99,14 +100,16 @@ const StampLocationCard: React.FC<StampLocationCardProps> = ({
             {getAcquisitionMethodIcon()}
             <span className="text-xs text-gray-600">{getAcquisitionMethodText()}</span>
           </div>
-          <Button 
-            size="sm"
-            className="w-full h-8 bg-blue-500 hover:bg-blue-600 text-white text-xs flex items-center justify-center gap-1"
-            onClick={onOpenMap}
-          >
-            <Map className="w-3 h-3" />
-            マップで確認
-          </Button>
+          <div className='mt-auto'>
+            <button
+              className={`w-full rounded-[10px] h-8 active:scale-[0.98] transition ${mapPath ? 'bg-blue-300' : 'bg-gray-300 cursor-not-allowed'}`}
+                    aria-live="polite"
+                    disabled={!mapPath}
+                    onClick={() => { if (mapPath) router.push(mapPath); }}
+            >
+              <span className='main-font-thin text-xs'>マップを見る</span>
+            </button>
+          </div>
         </div>
         </CardContent>
     </Card>

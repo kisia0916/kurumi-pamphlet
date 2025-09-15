@@ -10,7 +10,7 @@ function HowToBuy() {
         <div className='w-[93%] m-auto mt-0'>
             
 
-                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5">
+                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5 border-[1px] border-gray-200">
                   <CardHeader className="text-center pb-4">
                     <div className="w-16 h-16 mx-auto mb-4 bg-amber-300 rounded-full flex items-center justify-center mt-1 ">
                       <Check  className="w-8 h-8 text-primary"/>
@@ -22,7 +22,7 @@ function HowToBuy() {
                     <CardDescription className="text-base">メニュータブから購入したい商品の販売状況を確認しましょう</CardDescription>
                   </CardHeader>
                 </Card>
-                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5">
+                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5 border-[1px] border-gray-200">
                   <CardHeader className="text-center pb-4">
                     <div className="w-16 h-16 mx-auto mb-4 bg-amber-300 rounded-full flex items-center justify-center mt-1">
                       <Ticket className="w-8 h-8 text-primary"/>
@@ -34,7 +34,7 @@ function HowToBuy() {
                     <CardDescription className="text-base">各購入口にて食券を購入してください</CardDescription>
                   </CardHeader>
                 </Card>
-                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5 ">
+                <Card className="relative z-10 h-full hover:shadow-lg transition-shadow main-font-thin mt-5 border-[1px] border-gray-200">
                   <CardHeader className="text-center pb-4">
                     <div className="w-16 h-16 mx-auto mb-4 bg-amber-300 rounded-full flex items-center justify-center mt-1 ">
                       <Hamburger className="w-8 h-8 text-primary" />

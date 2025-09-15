@@ -60,19 +60,25 @@ model TimeTableContents {
 
 model StampPlace {
   id        String    @id @default(uuid())
+  index    Int
   createdAt DateTime @default(now())
   title     String
   photo     String
-  maplink   String
-  place     String
+  project_id String?
+  description String
+  project    Projects? @relation(fields: [project_id], references: [id])
+  // User の押印履歴（逆参照）
+  userStamps UserStamps[]
+  // クイズ（逆参照）
+  stampQuizzes StampQuiz[]
 }
 
 model UserStamps {
   id         String    @id @default(uuid())
   createdAt  DateTime @default(now())
   userId     String
-  stamps     String[]
-  exchanged  Boolean
+  stampPlaceId String
+  stamp        StampPlace @relation(fields: [stampPlaceId], references: [id])
 }
 
 model User {
@@ -126,6 +132,8 @@ model Projects {
   foodPlaces  FoodPlace[]
   team_name   String
   mapPins     MapPin[]
+  // スタンプ設置場所（任意の逆参照）
+  stampPlaces StampPlace[]
 }
 
 enum PinType {
@@ -176,4 +184,14 @@ model FoodPlace {
   project     Projects   @relation(fields: [project_id], references: [id])
   project_id  String
   foods       FoodData[]
+}
+
+model StampQuiz {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  quiz_data   String
+  // 紐づくスタンプ設置場所
+  stampPlaceId String
+  stampPlace   StampPlace @relation(fields: [stampPlaceId], references: [id])
+  random_key   String
 }
