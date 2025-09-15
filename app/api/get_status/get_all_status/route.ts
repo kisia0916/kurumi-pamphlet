@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { cacheSuccessHeaders } from '../../_utils/cacheHeaders'
+import {cacheSuccessHeadersMini } from '../../_utils/cacheHeaders'
 
 
 export async function GET(request: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       data: allStatus,
       count: allStatus.length,
       timestamp: new Date().toISOString()
-  }, { status: 200})
+  }, { status: 200,headers: cacheSuccessHeadersMini})
     
   } catch (error) {
     console.error('❌ Error fetching all building status data')
