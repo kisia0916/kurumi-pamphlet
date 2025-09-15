@@ -7,7 +7,7 @@ import { useParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 
 // Prismaスキーマに基づく型定義
-type BuildingStatusType = 'hard' | 'middle' | 'empty'
+type BuildingStatusType = 'hard' | 'middle' | 'empty'| 'unknown'
 
 interface Floor {
   id: string
@@ -91,39 +91,29 @@ function BuildingInfoCard() {
         try{ 
           setLoading(true)
           console.log(buildingId)
-          const [buildingResponse,statusResponse] = await Promise.all([
-            fetch(`/api/get_building/${buildingId}`),
-
-            fetch(`/api/get_status/get_one_status/${buildingId}`)
-          ])
+          const buildingResponse = await  fetch(`/api/get_building/${buildingId}`)
         if (!buildingResponse.ok) {
           throw new Error('建物データの取得に失敗しました');
         }
-
-        if (!statusResponse.ok) {
-          throw new Error('ステータスデータの取得に失敗しました');
-        }
-
-        // レスポンスをJSONに変換
         const buildingResult: ApiResponse<BuildingData> = await buildingResponse.json()
-        const statusResult: StatusApiResponse = await statusResponse.json()
 
-        // データを状態に設定
         setBuildingData(buildingResult.data)
-        setStatusData(statusResult.data)
         set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img})).sort((a,b)=>a.floor-b.floor))
 
-        // タイトルを建物名に設定
         if (buildingResult.data) {
           setTitle(buildingResult.data.name)
         }
+        setLoading(false)
 
+        const statusResponse = await fetch(`/api/get_status/get_one_status/${buildingId}`)
+        if (!statusResponse.ok) {
+          throw new Error('ステータスデータの取得に失敗しました');
+        }
+        const statusResult: StatusApiResponse = await statusResponse.json()
+        setStatusData(statusResult.data)
       } catch (error) {
         setError(error instanceof Error ? error.message : 'データの取得に失敗しました')
-      } finally {
-        setLoading(false)
-        console.log('データの取得が完了しました');
-      }
+      } 
     }
     fetchData();
   }, [buildingId, setTitle])
@@ -136,7 +126,7 @@ function BuildingInfoCard() {
       )[0]
       return latest.status
     }
-    return 'empty'
+    return 'unknown'
   }
 
   // ステータスに基づくバッジ情報
