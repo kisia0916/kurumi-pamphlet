@@ -21,7 +21,7 @@ function ProjectDetailInfo(props:{project:ProjectCardMiniProps}) {
       } catch {}
     }
 const handleCopy = () => {
-    clipboardCopy(`${window.location.origin}${pathname}`).then(() => {
+    clipboardCopy(`${window.location.origin}${pathname}?floor=${props.project.floor_id}`).then(() => {
       setCopied(true)
       setTimeout(() => {
         setCopied(false)

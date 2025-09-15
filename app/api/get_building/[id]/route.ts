@@ -5,13 +5,13 @@ import { cacheSuccessHeaders } from '../../_utils/cacheHeaders'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     console.log('🏢 Fetching specific building data...')
     
     // URLパラメータからIDを取得
-    const { id } = params
+    const { id } = await  params
 
     if (!id) {
       return NextResponse.json({

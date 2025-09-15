@@ -43,7 +43,7 @@ function page() {
     setTitle("校舎一覧");
     setMapImg("https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/map1.png");
     setMapZoom(1)
-    setHeight("calc(100dvh - 80px - 300px)");
+    setHeight("calc(100dvh - 80px - 270px)");
     const fetchElementData = async () => {
       try {
         setLoading(true);
@@ -68,9 +68,9 @@ function page() {
         }
         const buildingsData = (await buildingsResponse.json()).reverse();
         const statusData = await statusResponse.json();
-  const mapPinData = await mapPinResponse.json();
-  // is_selected を初期化して付与
-  const pinsWithSelection = (mapPinData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
+        const mapPinData = await mapPinResponse.json();
+        // is_selected を初期化して付与
+        const pinsWithSelection = (mapPinData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
         // buildingsDataをindexでソート（降順）
         const sortedBuildings = buildingsData.sort((a: Building, b: Building) => a.index- b.index);
 

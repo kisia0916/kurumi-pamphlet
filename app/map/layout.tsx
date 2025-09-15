@@ -33,7 +33,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
     const targetRef = React.useRef<HTMLDivElement>(null);
     const barRef = React.useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(true);
-  const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins, mapZoom } = useTitle();
+  const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins, mapZoom,is_display_navigation } = useTitle();
     const router = useRouter();
     const change_size = () => {
       let newHeight = height;
@@ -41,14 +41,14 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
         newHeight = "calc(100dvh - 60px - 80px)";
         setIsExpanded(true);
       } else {
-        newHeight = "calc(100dvh - 80px - 300px)";
+        newHeight = "calc(100dvh - 80px - 270px)";
         setIsExpanded(false);
       }
       setHeight(newHeight);
     }
     useEffect(()=>{
       if (barRef.current){
-          barRef.current.style.height = `calc(100dvh - 80px - 300px)`;
+          barRef.current.style.height = `calc(100dvh - 80px - 270px)`;
       }
     },[barRef])
 
@@ -150,7 +150,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
           {/*メインメニュー*/}
             <div
             className="w-full flex overflow-y-auto"
-            style={{ height: 'calc(100% - 128px)' }} // 24px (handle h-6) + 40px (top bar h-10)
+            style={{ height: is_display_navigation?'calc(100% - 60px - 60px)':'calc(100% - 60px)' }} // 24px (handle h-6) + 40px (top bar h-10)
             >
             {children}
             </div>

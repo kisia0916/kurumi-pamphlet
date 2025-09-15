@@ -211,7 +211,7 @@ function SearchBox() {
           </div>
         </div>
         {open && (
-          <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl border border-gray-200 shadow-lg max-h-72 overflow-auto z-50 p-2 animate-in fade-in-0 zoom-in-95">
+          <div className="absolute left-0 right-0 mt-2 bg-white rounded-2xl border border-gray-200 shadow-lg max-h-72 overflow-auto overflow-x-hidden z-50 p-2 animate-in fade-in-0 zoom-in-95">
 
             <div className="w-full">
               <div className='w-full flex items-center justify-between'>

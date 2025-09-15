@@ -37,6 +37,10 @@ interface TitleContextType {
   setMapPins: (pins: {id:string,pin:MapPinData[]}) => void;
   now_page: "map" | "food" | "stamp" | "timetable";
   set_now_page: (page: "map" | "food" | "stamp" | "timetable") => void;
+  navMode: 'full' | 'compact';
+  setNavMode: (mode: 'full' | 'compact') => void;
+  is_display_navigation: boolean;
+  set_is_display_navigation: (expanded: boolean) => void;
 
 }
 
@@ -44,13 +48,15 @@ const TitleContext = createContext<TitleContextType | undefined>(undefined);
 
 export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [title, setTitle] = useState<string>('');
-  const [height, setHeight] = useState<string>('calc(100dvh - 80px - 300px)');
+  const [height, setHeight] = useState<string>('calc(100dvh - 80px - 270px)');
   const [showBackButton, setShowBackButton] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/loading_map.png');
   const [mapZoom, setMapZoom] = useState<number>(1);
   const [mapPins, setMapPins] = useState<{id:string,pin:MapPinData[]}>({id:"",pin:[]});
   const [now_page, set_now_page] = useState<"map" | "food" | "stamp" | "timetable">("map");
+  const [navMode, setNavMode] = useState<'full' | 'compact'>('full');
+  const [is_display_navigation, set_is_display_navigation] = useState<boolean>(true);
   return (
     <TitleContext.Provider value={{ 
       title, setTitle, 
@@ -61,6 +67,8 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
       mapZoom, setMapZoom,
       mapPins, setMapPins,
       now_page, set_now_page,
+      navMode, setNavMode,
+      is_display_navigation, set_is_display_navigation,
     }}>
       {children}
     </TitleContext.Provider>

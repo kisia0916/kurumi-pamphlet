@@ -25,24 +25,7 @@ function Map(props:{map_img:string,map_pins:{id:string,pin:MapPinData[]},map_zoo
 
   return (
     <div className='w-full z-10'>
-      <div className="z-5 flex flex-col absolute mt-[220px] right-5">
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-white shadow-md rounded-b-none"
-          onClick={() => zoomRef.current?.zoomIn?.(0.3)}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-white shadow-md rounded-t-none border-t-0"
-          onClick={() => zoomRef.current?.zoomOut?.(0.3)}
-        >
-          <Minus className="h-4 w-4" />
-        </Button>
-      </div>
+
 
       <TransformWrapper
         ref={zoomRef}

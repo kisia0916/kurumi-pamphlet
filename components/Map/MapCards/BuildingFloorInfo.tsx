@@ -111,13 +111,29 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
       <MiniMap map_img={selectedFloor.map_img} floor_id={selectedFloor.id}/>
     </div>
         <div className='w-full flex mt-3'>
-            <Button 
+            {/* <Button 
               className='w-full h-10 m-auto flex items-center justify-center gap-1 rounded-full bg-amber-400 text-[15px]'
               onClick={handleDetailClick}
             >
                 <span className='main-font-thin'>詳細</span>
                 <ChevronRight className='h-6 mt-[1px]'/>
-            </Button>
+            </Button> */}
+
+
+          <button
+              onClick={handleDetailClick}
+
+              className='w-full rounded-full bg-blue-300 h-10 active:scale-[0.98] transition flex'
+              aria-live="polite"
+              aria-label="詳細"
+          >
+            <div className='m-auto flex'>
+              <span className='main-font-thin text-xs'>詳細を見る</span>
+              <ChevronRight className='h-3 mt-[3px]'/>
+            </div>
+          </button>
+
+
         </div>
         <div className='w-full mt-4 space-y-2'>
           {project_list.length === 0 ? (

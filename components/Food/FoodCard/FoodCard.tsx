@@ -28,7 +28,7 @@ function FoodCard(props:{food:FoodData}) {
     console.log(props.food)
   },[])
   return (
-    <Card className="w-full overflow-hidden flex flex-col m-auto">
+    <Card className="w-full overflow-hidden flex flex-col m-auto border-[1px] border-gray-200">
       <div className="relative h-30 w-[92%] m-auto">
         <Image
           src={props.food.photo}

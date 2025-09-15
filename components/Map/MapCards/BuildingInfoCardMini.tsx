@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { useTitle } from '@/contexts/TitleContext';
 import { ChevronRight } from 'lucide-react'
+import Image from 'next/image';
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 
@@ -12,7 +13,7 @@ function BuildingInfoCard(props: {
   content_num: number;
   pic_url: string;
   flower: number;
-  congestion: Congestion;
+  congestion: string;
   get_status:boolean
 }) {
   const {setTitle} = useTitle();
@@ -55,8 +56,8 @@ function BuildingInfoCard(props: {
       setTitle(props.name);
     }} href={`/map/building/${props.id}`} className='flex w-full h-17 mt-2 mb-4 justify-between no-underline'>
       <div className='flex'>
-      <div className='w-18 h-17 bg-amber-300 rounded-[10px]'>
-        <img src={`${props.pic_url}`} className='w-full h-full object-cover rounded-[10px]' />
+      <div className='w-18 h-17 bg-amber-300 rounded-[10px] relative'>
+        <Image src={`${props.pic_url}`} className='w-full h-full object-cover rounded-[10px]' alt={props.name} fill style={{ objectFit: 'cover' }}/>
       </div>
       <div className='h-full ml-4 flex'>
         <div className='m-auto'>

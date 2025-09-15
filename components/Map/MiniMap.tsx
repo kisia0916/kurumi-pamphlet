@@ -49,7 +49,7 @@ function MiniMap(props:{map_img:string,floor_id:string}) {
     
   return (
     <div className='w-full z-10'>
-        <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2'>
+        <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2 overflow-hidden'>
             <TransformWrapper
             initialScale={1.2}
             centerOnInit
