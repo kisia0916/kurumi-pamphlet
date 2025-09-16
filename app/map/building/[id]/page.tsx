@@ -4,9 +4,10 @@ import { useTitle } from '@/contexts/TitleContext'
 import React, { useEffect } from 'react'
 
 function page() {
-  const { setTitle, setShowBackButton, setHeight,height } = useTitle()
+  const { setTitle, setShowBackButton, setHeight,set_back_button_path } = useTitle()
   useEffect(() => {
     setHeight("calc(100dvh - 60px - 80px)")
+    set_back_button_path(`/map`)
     setShowBackButton(true)
 
 

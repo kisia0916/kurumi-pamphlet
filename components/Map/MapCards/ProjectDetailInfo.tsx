@@ -39,7 +39,7 @@ const handleCopy = () => {
                     <MapPin className='w-5 h-5 mr-2 mt-1 text-gray-800'/>
                       <Link href={`/map/floor/${props.project.floor_id}`}>
                         <Badge className='flex rounded-full bg-gray-800 mt-1 cursor-pointer'>
-                          <span>{props.project.building.name} {props.project.floor.floor_num}階</span>
+                          <span>{props.project.building.name} {props.project.floor.floor_num<0?"B"+Math.abs(props.project.floor.floor_num):props.project.floor.floor_num}階</span>
                         </Badge>
                       </Link>
                     <span className='main-font-thin ml-2 text-[15px] mt-1'>{props.project.room_name}</span>

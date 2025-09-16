@@ -69,14 +69,14 @@ function page() {
           
           {/* スタンプ追加ボタン */}
           <Button 
-            className='w-[97%] h-11 mt-4 bg-amber-400 hover:bg-amber-600 text-white rounded-full '
+            className='w-[97%] h-11 mt-4 bg-amber-300 hover:bg-amber-600 text-white rounded-full border-[1px] border-amber-400'
             onClick={() => {
               // スタンプ追加の処理をここに書く
               router.push('/stamp/scan')
             }}
           >
             <Stamp className="w-4 h-4 text-gray-700" />
-            <span className='text-[13px] text-gray-700'>スタンプを読み込む</span>
+            <span className='text-[13px] text-gray-700'>QRコードを読み込む</span>
           </Button>
         </div>
         <div className='w-full mb-3'>

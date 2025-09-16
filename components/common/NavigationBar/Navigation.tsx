@@ -4,6 +4,7 @@ import NavigationButton from './NavigationButton';
 import { useTitle } from '@/contexts/TitleContext';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
+import { max_width } from '@/lib/utils';
 
 function Navigation() {
     const { now_page, set_now_page, setNavMode, is_display_navigation, set_is_display_navigation } = useTitle();
@@ -28,7 +29,7 @@ function Navigation() {
       if (pathname.startsWith('/map')) set_now_page('map');
       else if (pathname.startsWith('/food')) set_now_page('food');
       else if (pathname.startsWith('/stamp')) set_now_page('stamp');
-      else if (pathname.startsWith('/timetable')) set_now_page('timetable');
+      else if (pathname.startsWith('/event')) set_now_page('event');
     }, [pathname, set_now_page]);
 
     const isCompact = viewportHeight > 0 && viewportHeight < 700;
@@ -43,7 +44,7 @@ function Navigation() {
     if (viewportHeight < 700) {
       return (
         <div 
-          className="fixed bottom-5 right-5 z-[1000]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg"
+          className={`fixed bottom-5 right-5 z-[1000]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg `}
           style={{ width: '50px', height: isFabExpanded ? '320px' : '50px' }}
         >
           {isFabExpanded && (
@@ -51,7 +52,7 @@ function Navigation() {
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='map' icon='/kurumiIcon/map.svg' title='マップ' size='s'/>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='food' icon='/kurumiIcon/food.svg' title='食べ物'  size='s'/>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='stamp' icon='/kurumiIcon/stamp.svg' title='スタンプ'  size='s'/>
-            <NavigationButton now_page={now_page} set_now_page={set_now_page} page='timetable' icon='/kurumiIcon/time_table.svg' title='タイムテーブル'  size='s'/>
+            <NavigationButton now_page={now_page} set_now_page={set_now_page} page='event' icon='/kurumiIcon/time_table.svg' title='イベント'  size='s'/>
         </div>)}
           <button 
             onClick={() => setIsFabExpanded(!isFabExpanded)} 
@@ -66,9 +67,11 @@ function Navigation() {
       return (
         <nav style={{
           position: 'fixed',
-          left: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
           bottom: 0,
           width: '100%',
+          // maxWidth: `${max_width}px`,
           background: '#fff',
           boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)',
           zIndex: 1000,
@@ -81,7 +84,7 @@ function Navigation() {
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='map' icon='/kurumiIcon/map.svg' title='マップ' size='l'/>
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='food' icon='/kurumiIcon/food.svg' title='食べ物'  size='l'/>
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='stamp' icon='/kurumiIcon/stamp.svg' title='スタンプ'  size='l'/>
-                <NavigationButton now_page={now_page} set_now_page={set_now_page} page='timetable' icon='/kurumiIcon/time_table.svg' title='タイムテーブル'  size='l'/>
+                <NavigationButton now_page={now_page} set_now_page={set_now_page} page='event' icon='/kurumiIcon/time_table.svg' title='イベント'  size='l'/>
             </div>
         </nav>
       )

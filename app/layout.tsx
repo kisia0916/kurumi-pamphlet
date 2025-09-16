@@ -41,11 +41,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic&display=swap" rel="stylesheet"></link>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden h-[100dvh]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden h-[100dvh] flex`}
       >
         <TitleProvider>
-          {children}
-          <Navigation/>
+            {children}
+            <Navigation/>
+
         </TitleProvider>
         <Analytics />
       </body>

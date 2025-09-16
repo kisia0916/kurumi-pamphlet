@@ -6,6 +6,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { useTitle } from '@/contexts/TitleContext'
 import { useRouter } from 'next/navigation'
 import { Buildings, Floor } from '@prisma/client';
+import { max_width } from '@/lib/utils';
 
 export interface ProjectCardMiniProps {
   id:string     
@@ -33,7 +34,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
     const targetRef = React.useRef<HTMLDivElement>(null);
     const barRef = React.useRef<HTMLDivElement>(null)
     const [isDragging, setIsDragging] = useState(true);
-  const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins, mapZoom,is_display_navigation } = useTitle();
+  const { title, height, setHeight, showBackButton, isExpanded, setIsExpanded, mapImg, mapPins, mapZoom,is_display_navigation,back_button_path } = useTitle();
     const router = useRouter();
     const change_size = () => {
       let newHeight = height;
@@ -130,7 +131,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
                 <button
                   className='w-8 h-8 mr-2  flex items-center justify-center'
                   onClick={() => {
-                    router.back()
+                    router.push(back_button_path || '/map')
                   }}
                 >
                   <ArrowLeft className='w-6 h-6' />

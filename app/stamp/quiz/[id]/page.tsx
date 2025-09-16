@@ -87,7 +87,9 @@ export default function Page() {
       let user_id = get_cookie("stamp_user_id")
       if (!get_cookie("stamp_user_id")) {
         user_id = crypto.randomUUID()
-        document.cookie = "stamp_user_id=" + user_id + "; path=/"
+        const future = new Date();
+        future.setFullYear(future.getFullYear() + 10);
+        document.cookie = "stamp_user_id=" + user_id + `path=/; expires=${future.toUTCString()}`
       }
       try {
         const res = await fetch('/api/get_stamp_data/register_user_stamp', {

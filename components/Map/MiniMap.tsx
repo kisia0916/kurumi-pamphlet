@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import MapPinComponent from './MapPin';
 import { Buildings, Floor,Projects } from '@prisma/client';
 
@@ -23,6 +23,8 @@ function MiniMap(props:{map_img:string,floor_id:string}) {
     const [miniMapPins, setMiniMapPins] = useState<MapPinData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const zoomRef = useRef<ReactZoomPanPinchRef | null>(null)
+    const imgRef = useRef<HTMLImageElement | null>(null)
 
     useEffect(() => {
       // APIからBuildingタイプのピンデータを取得
@@ -46,12 +48,20 @@ function MiniMap(props:{map_img:string,floor_id:string}) {
       fetchBuildingPins();
     }, [props.floor_id]);
     
-    
+    useEffect(()=>{
+    if (!zoomRef.current || !imgRef.current) return
+    try {
+      zoomRef.current.zoomToElement(imgRef.current, 1.2)
+    } catch (err) {
+      console.error("zoomToElement エラー:", err)
+    }
+    },[])
   return (
     <div className='w-full z-10'>
         <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2 overflow-hidden'>
             <TransformWrapper
-            initialScale={1.2}
+            ref={zoomRef}
+            initialScale={1}
             centerOnInit
             velocityAnimation={{ disabled: false }}
             >
@@ -60,6 +70,7 @@ function MiniMap(props:{map_img:string,floor_id:string}) {
                 <div className="relative w-[100%] max-w-[100%] ">
                     <img
                     src={props.map_img}
+                    ref={imgRef}
                     alt="School Map"
                     className="w-full h-full object-contain"
                     draggable={false}

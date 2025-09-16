@@ -134,6 +134,7 @@ model Projects {
   mapPins     MapPin[]
   // スタンプ設置場所（任意の逆参照）
   stampPlaces StampPlace[]
+  event_times event_time[]
 }
 
 enum PinType {
@@ -194,4 +195,35 @@ model StampQuiz {
   stampPlaceId String
   stampPlace   StampPlace @relation(fields: [stampPlaceId], references: [id])
   random_key   String
+}
+
+model event_time {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  title       String
+  start_time  String
+  end_time    String
+  project_id  String?
+  project     Projects?   @relation(fields: [project_id], references: [id])
+  event_space_id  String
+  event_space    event_space   @relation(fields: [event_space_id], references: [id])
+  event_date_id  String
+  event_date    event_date   @relation(fields: [event_date_id], references: [id])
+}
+
+model event_date {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  index       Int
+  name        String
+  event_spaces event_time[]
+}
+
+model event_space {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  name        String
+  color       String
+  event_times event_time[]
+
 }

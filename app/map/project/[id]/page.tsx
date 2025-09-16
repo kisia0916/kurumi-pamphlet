@@ -13,7 +13,7 @@ function page() {
   const floor_id = searchParams.get('floor') ?? '';
 
   console.log(searchParams)
-  const {setTitle,setMapZoom,setHeight,setMapImg,setShowBackButton,setMapPins,mapPins} = useTitle()
+  const {setTitle,setMapZoom,setHeight,setMapImg,setShowBackButton,setMapPins,mapPins,set_back_button_path} = useTitle()
   const [project_data,set_project_data] = React.useState<ProjectCardMiniProps|null>(null)
   const [is_get_data,set_is_get_data] = useState(false)
   // クエリから is_get_data を取得（?is_get_data=true|1 で true）
@@ -26,6 +26,7 @@ function page() {
           set_is_get_data(false)
         }
         setTitle("読み込み中...")
+        set_back_button_path(`/map/floor/${floor_id}`)
         setShowBackButton(true)
         setHeight("calc(100dvh - 60px - 80px - 200px)")
         const [get_data, pin_data] =await  Promise.all([

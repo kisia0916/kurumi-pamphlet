@@ -21,7 +21,7 @@ function BuildingFloorDetailInfo() {
   const [floorInfo,setFloorInfo] = useState<any | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
-  const { setTitle,setMapImg,setMapPins } = useTitle()
+  const { setTitle,setMapImg,setMapPins,setShowBackButton,set_back_button_path } = useTitle()
   const params = useParams()
   const floor_Id = Array.isArray(params.id) ? params.id[0] : params.id
   useEffect(()=>{
@@ -53,6 +53,8 @@ function BuildingFloorDetailInfo() {
           const pinsWithSelection = (floorMapPinsData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
           setMapPins({ id: `${floor_Id}`, pin: pinsWithSelection })
         }
+        set_back_button_path(`/map/building/${floorData.building_id}`)
+        setShowBackButton(true)
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
       } catch (e:any) {
