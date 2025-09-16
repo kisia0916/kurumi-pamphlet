@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/common/NavigationBar/Navigation";
 import { TitleProvider } from "@/contexts/TitleContext";
 import { Analytics } from "@vercel/analytics/next";
+import { max_width } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,9 +45,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden h-[100dvh] flex`}
       >
         <TitleProvider>
+          <div className="w-full" style={{ maxWidth: `${max_width}px`, margin: "0 auto" }}>
             {children}
-            <Navigation/>
-
+            <Navigation />
+          </div>
         </TitleProvider>
         <Analytics />
       </body>

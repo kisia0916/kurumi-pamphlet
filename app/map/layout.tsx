@@ -95,7 +95,7 @@ function MapLayoutContent({ children }: { children: ReactNode }) {
 
 
   return (
-    <div className='w-full' style={{ height: "calc(100dvh - 60px)" }}>
+    <div className='w-full relative' style={{ height: "calc(100dvh - 25px)" }}>
 
       <SearchBox/>
       <div className='w-full z-10' >

@@ -146,3 +146,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Global thin scrollbar styles */
+/* Firefox */
+* {
+  scrollbar-width: thin; /* auto | thin | none */
+  scrollbar-color: rgba(0,0,0,0.28) transparent; /* thumb track */
+}
+.dark * {
+  scrollbar-color: rgba(255,255,255,0.28) transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.28);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.38);
+}
+.dark *::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.28);
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255,255,255,0.38);
+}

@@ -71,7 +71,7 @@ function Navigation() {
           transform: 'translateX(-50%)',
           bottom: 0,
           width: '100%',
-          // maxWidth: `${max_width}px`,
+          maxWidth: `${max_width}px`,
           background: '#fff',
           boxShadow: '0px 10px 53px 16px rgba(17,17,26,0.08)',
           zIndex: 1000,
