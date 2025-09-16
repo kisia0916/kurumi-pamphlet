@@ -18,7 +18,7 @@ interface Floor_include_Building extends Floor {
 
 function BuildingFloorDetailInfo() {
   const [project_list,set_project_list] = React.useState<ProjectCardMiniProps[]>([])
-  const [floorInfo,setFloorInfo] = useState<any | null>(null)
+  const [floorInfo,setFloorInfo] = useState<Floor | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
   const { setTitle,setMapImg,setMapPins,setShowBackButton,set_back_button_path } = useTitle()
@@ -54,6 +54,7 @@ function BuildingFloorDetailInfo() {
           setMapPins({ id: `${floor_Id}`, pin: pinsWithSelection })
         }
         set_back_button_path(`/map/building/${floorData.building_id}`)
+        setFloorInfo(floorData)
         setShowBackButton(true)
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
         setTitle(floorData.building.name+" "+""+(floorData.floor_num < 0 ? `B${floorData.floor_num}階` : `${floorData.floor_num}階`))
@@ -92,12 +93,22 @@ function BuildingFloorDetailInfo() {
             <Badge className='w-fit px-4 h-8 rounded-full bg-gray-400 text-black '>
               <span className='text-white'>企画数 {project_list.length}</span>
             </Badge>
+
+            {floorInfo?.toilets === "BOTH"?<>
             <Badge className='rounded-full h-8 bg-blue-400 ml-2'>
                 <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
             </Badge>
             <Badge className='rounded-full h-8 ml-1 bg-pink-400'>
                 <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
-            </Badge>
+            </Badge></>:<></>}
+              {floorInfo?.toilets === "MAN"?<>
+            <Badge className='rounded-full h-8 bg-blue-400 ml-2'>
+                <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
+            </Badge></>:<></>}
+              {floorInfo?.toilets === "WOMAN"?<>
+            <Badge className='rounded-full h-8 ml-1 bg-pink-400'>
+                <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
+            </Badge></>:<></>}
         </div>
         <div className='w-full'>
           {project_list.length === 0 ? (
