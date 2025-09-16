@@ -8,24 +8,24 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 import { ProjectCardMiniProps } from '@/app/map/layout'
 
-function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:string}[]}) {
+function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:string,toilets:string}[]}) {
   const query = useSearchParams()
-  const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string,map_img:string}>(() => {
-    if (!props.floor_list || props.floor_list.length === 0) return { floor_text:'', id:'', map_img:'' }
+  const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string,map_img:string,toilets:string}>(() => {
+    if (!props.floor_list || props.floor_list.length === 0) return { floor_text:'', id:'', map_img:'',toilets:'' }
     const parseTxt = (n:number)=> n < 0 ? `B${n}階` : `${n}階`
     const floorParam = query.get('floor')
     if (floorParam) {
       const floorNum = Number(floorParam)
       if (Number.isInteger(floorNum)) {
         const found = props.floor_list.find(f=>f.floor === floorNum)
-        if (found) return { floor_text: parseTxt(found.floor), id: found.id, map_img: found.map_img }
+        if (found) return { floor_text: parseTxt(found.floor), id: found.id, map_img: found.map_img,toilets: found.toilets }
       }
     }
     // デフォルト: 正の階の最小 or 全体の最小
     const positives = props.floor_list.filter(f=>f.floor>0)
     const target = (positives.length>0 ? positives : props.floor_list)
       .reduce((a,b)=> a.floor < b.floor ? a : b)
-    return { floor_text: parseTxt(target.floor), id: target.id, map_img: target.map_img }
+    return { floor_text: parseTxt(target.floor), id: target.id, map_img: target.map_img ,toilets: target.toilets}
   })
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const router = useRouter()
@@ -36,7 +36,8 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
   const floor_transform = (props.floor_list||[]).map(f=> ({
     text: f.floor < 0 ? `B${f.floor}階` : `${f.floor}階`,
     id: f.id,
-    map_img: f.map_img
+    map_img: f.map_img,
+    toilet: f.toilets
   }))
   const floors = floor_transform.map(f=>f.text)
 
@@ -49,7 +50,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
   }
   useEffect(()=>{
 
-
+    console.log(selectedFloor)
     const get_floor_project_data = async()=>{
       try {
         const project_data = await fetch(`/api/get_floor_data/get_floor_project_list/${selectedFloor.id}`)
@@ -86,7 +87,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
                         key={floor}
                         className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors"
                         onClick={() => {
-                          if (found) setSelectedFloor({ floor_text: found.text, id: found.id, map_img: found.map_img })
+                          if (found) setSelectedFloor({ floor_text: found.text, id: found.id, map_img: found.map_img,toilets: found.toilet })
                           setIsDropdownOpen(false)
                         }}
                       >{floor}</button>
@@ -96,12 +97,18 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
               )}
             </div>
             <div className='flex'>
-                <Badge className='rounded-full h-8 m-auto mt-[12px]  bg-blue-400 ml-1'>
+                {selectedFloor.toilets === "BOTH"?<><Badge className='rounded-full h-8 m-auto mt-[12px]  bg-blue-400 ml-1'>
                     <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
                 </Badge>
                 <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 bg-pink-400'>
                     <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
-                </Badge>
+                </Badge></>:<></>}
+                {selectedFloor.toilets === "MAN"?<><Badge className='rounded-full h-8 m-auto mt-[12px]  bg-blue-400 ml-1'>
+                    <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
+                </Badge></>:<></>}
+                {selectedFloor.toilets === "WOMAN"?<><Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 bg-pink-400'>
+                    <img src="/kurumiIcon/rest_area_fill.svg" className='w-5'/>
+                </Badge></>:<></>}
                 <Badge className='rounded-full h-8 m-auto mt-[12px] ml-1 mr-0 bg-amber-400'>
                     <span>企画数 {project_list.length}</span>
                 </Badge>

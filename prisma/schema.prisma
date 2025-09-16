@@ -105,6 +105,12 @@ model Buildings {
   statusHistory BuildingStatus[]
 }
 
+enum toilets {
+  MAN
+  WOMAN
+  BOTH
+}
+
 model Floor {
   id          String      @id @default(uuid())
   createdAt   DateTime   @default(now())
@@ -114,6 +120,7 @@ model Floor {
   floor_map_img String
   projects    Projects[]
   mapPins     MapPin[]
+  toilets     toilets?
 }
 
 model Projects {

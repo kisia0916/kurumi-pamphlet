@@ -15,6 +15,7 @@ interface Floor {
   building_id: string
   floor_num: number,
   floor_map_img: string
+  toilets: string
 }
 
 interface Project {
@@ -84,7 +85,7 @@ function BuildingInfoCard() {
     const [statusData, setStatusData] = useState<BuildingStatus[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [floor_list,set_floor_list] = useState<{floor:number,id:string,map_img:string}[]>([])
+    const [floor_list,set_floor_list] = useState<{floor:number,id:string,map_img:string,toilets:string}[]>([])
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -98,7 +99,7 @@ function BuildingInfoCard() {
         const buildingResult: ApiResponse<BuildingData> = await buildingResponse.json()
 
         setBuildingData(buildingResult.data)
-        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img})).sort((a,b)=>a.floor-b.floor))
+        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img,toilets:floor.toilets})).sort((a,b)=>a.floor-b.floor))
 
         if (buildingResult.data) {
           setTitle(buildingResult.data.name)
