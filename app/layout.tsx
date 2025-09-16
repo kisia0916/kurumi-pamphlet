@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kurumi｜輝玉祭デジタルパンフレットアプリ",
-  description: "攻玉社高校公式のデジタルパンフレットwebアプリです",
+  description: "攻玉社中学高等学校の文化祭公式のデジタルパンフレットwebアプリです",
 };
 
 export default function RootLayout({
