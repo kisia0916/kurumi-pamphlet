@@ -32,7 +32,7 @@ type BuildingStatus = {
 
 
 function page() {
-  const { setTitle, setShowBackButton,setHeight,setMapImg,setMapZoom,setMapPins } = useTitle()
+  const { setTitle, setShowBackButton,setHeight,setMapImg,setMapZoom,setMapPins,set_is_open_navigation } = useTitle()
   
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [buildingStatuses, setBuildingStatuses] = useState<BuildingStatus[]>([]);

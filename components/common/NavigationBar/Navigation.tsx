@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import NavigationButton from './NavigationButton';
 import { useTitle } from '@/contexts/TitleContext';
 import { usePathname } from 'next/navigation';
@@ -7,10 +7,10 @@ import { Menu, X } from 'lucide-react';
 import { max_width } from '@/lib/utils';
 
 function Navigation() {
-    const { now_page, set_now_page, setNavMode, is_display_navigation, set_is_display_navigation } = useTitle();
+    const { now_page, set_now_page, setNavMode, set_is_display_navigation,is_open_navigation,set_is_open_navigation } = useTitle();
     const pathname = usePathname();
     const [viewportHeight, setViewportHeight] = useState(0);
-    const [isFabExpanded, setIsFabExpanded] = useState<boolean>(false);
+  const fabRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
       const handleResize = () => {
         if (window.innerHeight < 700){
@@ -36,18 +36,37 @@ function Navigation() {
 
     useEffect(() => {
       setNavMode(isCompact ? 'compact' : 'full');
-      if (!isCompact && isFabExpanded) {
-        setIsFabExpanded(false);
+      if (!isCompact && is_open_navigation) {
+        // setIsFabExpanded(false);
+        set_is_open_navigation(false);
       }
-    }, [isCompact, setNavMode, isFabExpanded, setIsFabExpanded]);
+    }, [isCompact, setNavMode]);
+
+    // 外側クリックでコンパクトナビ(FAB)を閉じる
+    useEffect(() => {
+      if (viewportHeight >= 700) return; // フルナビ時は対象外
+      if (!is_open_navigation) return;
+      const onPointerDown = (e: PointerEvent) => {
+        const el = fabRef.current;
+        if (!el) return;
+        const target = e.target as Node | null;
+        if (target && !el.contains(target)) {
+          set_is_open_navigation(false);
+        }
+      };
+      document.addEventListener('pointerdown', onPointerDown, { capture: true });
+      return () => document.removeEventListener('pointerdown', onPointerDown, { capture: true } as any);
+    }, [viewportHeight, is_open_navigation, set_is_open_navigation]);
+
 
     if (viewportHeight < 700) {
       return (
         <div 
           className={`fixed bottom-5 right-5 z-[1000]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg `}
-          style={{ width: '50px', height: isFabExpanded ? '320px' : '50px' }}
+          style={{ width: '50px', height: is_open_navigation ? '320px' : '50px' }}
+          ref={fabRef}
         >
-          {isFabExpanded && (
+          {is_open_navigation && (
           <div className='w-full h-full '>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='map' icon='/kurumiIcon/map.svg' title='マップ' size='s'/>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='food' icon='/kurumiIcon/food.svg' title='食べ物'  size='s'/>
@@ -55,11 +74,11 @@ function Navigation() {
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='event' icon='/kurumiIcon/time_table.svg' title='イベント'  size='s'/>
         </div>)}
           <button 
-            onClick={() => setIsFabExpanded(!isFabExpanded)} 
+            onClick={() => set_is_open_navigation(!is_open_navigation)} 
             className="absolute right-0 bottom-0 w-[50px] h-[50px] flex items-center justify-center bg-white text-white rounded-full focus:outline-none border-1 border-gray-700"
-            aria-label={isFabExpanded ? 'Close menu' : 'Open menu'}
+            aria-label={is_open_navigation? 'Close menu' : 'Open menu'}
           >
-            {isFabExpanded ? <X size={24} className='text-black'/> : <Menu size={24} className='text-black'/>}
+            {is_open_navigation? <X size={24} className='text-black'/> : <Menu size={24} className='text-black'/>}
           </button>
         </div>
       )

@@ -43,6 +43,8 @@ interface TitleContextType {
   set_is_display_navigation: (expanded: boolean) => void;
   back_button_path:string;
   set_back_button_path: (path:string) => void;
+  is_open_navigation:boolean;
+  set_is_open_navigation: (open:boolean) => void;
 }
 
 const TitleContext = createContext<TitleContextType | undefined>(undefined);
@@ -59,6 +61,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [navMode, setNavMode] = useState<'full' | 'compact'>('full');
   const [is_display_navigation, set_is_display_navigation] = useState<boolean>(true);
   const [back_button_path,set_back_button_path] = useState<string>('/map');
+  const [is_open_navigation,set_is_open_navigation] = useState<boolean>(false);
   return (
     <TitleContext.Provider value={{ 
       title, setTitle, 
@@ -71,7 +74,8 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
       now_page, set_now_page,
       navMode, setNavMode,
       is_display_navigation, set_is_display_navigation,
-      back_button_path, set_back_button_path
+      back_button_path, set_back_button_path,
+      is_open_navigation,set_is_open_navigation
     }}>
       {children}
     </TitleContext.Provider>
