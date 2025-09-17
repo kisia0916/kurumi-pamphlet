@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { cacheSuccessHeadersMini } from '../_utils/cacheHeaders';
+import { cacheSuccessHeaders } from '../../_utils/cacheHeaders';
 import build from 'next/dist/build';
 
 export async function GET() {
@@ -21,7 +21,7 @@ export async function GET() {
         foods:true,
       }
     })
-  return NextResponse.json({data:foods.length>0?foods:[]}, { status: 200, headers: cacheSuccessHeadersMini });
+  return NextResponse.json({data:foods.length>0?foods:[]}, { status: 200, headers: cacheSuccessHeaders });
   } catch (error) {
     return NextResponse.json({ error: 'データ取得に失敗しました' }, { status: 500 });
   }

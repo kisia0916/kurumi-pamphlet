@@ -5,15 +5,18 @@ import type { FoodData, FoodPlace } from '@prisma/client'
 import { AlertCircle, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react'
 import Image from 'next/image'
 import React, { useEffect } from 'react'
+import { FoodStatusLike } from '@/app/food/page'
 
 
-function FoodCard(props:{food:FoodData}) {
+function FoodCard(props:{food:FoodData; statusOverride?: FoodStatusLike}) {
   // ステータスに応じたアイコンを取得する関数
-  const StatusText = props.food.status === "AVAILABLE" ? "在庫あり" :
-    props.food.status === "FEW" ? "残りわずか" :
-    props.food.status === "SOLDOUT" ? "売り切れ" : "不明"
+  const currentStatus: FoodStatusLike = props.statusOverride ?? (props.food.status as FoodStatusLike)
+  const StatusText = currentStatus === "AVAILABLE" ? "在庫あり" :
+    currentStatus === "FEW" ? "残りわずか" :
+    currentStatus === "SOLDOUT" ? "売り切れ" :
+    currentStatus === 'LOADING' ? '読み込み中…' : '不明'
   const getStatusIcon = () => {
-    switch (props.food.status) {
+    switch (currentStatus) {
       case "AVAILABLE":
         return <CheckCircle2 className="h-4 w-4 mr-1 text-green-500" />
       case "FEW":
@@ -68,17 +71,27 @@ function FoodCard(props:{food:FoodData}) {
       </CardContent>
       <CardFooter className="pt-0">
         <div
-          className={`w-full bg-${props.food.status === "AVAILABLE" ? "green-100" : props.food.status === "FEW" ? "amber-100" : "red-100"}`}
+          className={`w-full ${
+            currentStatus === 'AVAILABLE'
+              ? 'bg-green-100'
+              : currentStatus === 'FEW'
+              ? 'bg-amber-100'
+              : currentStatus === 'SOLDOUT'
+              ? 'bg-red-100'
+              : 'bg-gray-100'
+          }`}
         >
           <Badge
             variant="outline"
             className={`text-sm px-2 py-2 font-bold flex items-center w-full h-9 justify-center border-2
               ${
-                props.food.status === "AVAILABLE"
+                currentStatus === "AVAILABLE"
                   ? "border-green-500 bg-green-50 text-green-700"
-                  : props.food.status === "FEW"
+                  : currentStatus === "FEW"
                   ? "border-amber-500 bg-amber-50 text-amber-700"
-                  : "border-red-500 bg-red-50 text-red-700"
+                  : currentStatus === 'SOLDOUT'
+                  ? "border-red-500 bg-red-50 text-red-700"
+                  : "border-gray-400 bg-gray-50 text-gray-700"
               }`}
           >
             {getStatusIcon()}

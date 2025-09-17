@@ -21,18 +21,59 @@ export interface FoodCardInterface {
   foods: FoodData[];
 }
 
+// UIで扱う販売状況（フロント側の拡張）
+export type FoodStatusLike = 'AVAILABLE' | 'FEW' | 'SOLDOUT' | 'LOADING' | 'UNKNOWN';
+
+// ステータスAPIのレスポンス型
+type FoodStatusResponse = {
+  data: Array<{
+    id: string;
+    createdAt: string;
+    foods: Array<{ id: string; status: 'AVAILABLE' | 'FEW' | 'SOLDOUT' }>;
+  }>;
+};
+
 function Page() {
   const [now_page, set_now_page] = useState<"menu" | "how_to_buy">("menu");
   const [foods, setFoods] = useState<FoodCardInterface[]>([]);
   const [loading, setLoading] = useState(true);
+  // food.id -> status のマップ。初期は LOADING、取得後に上書き
+  const [statuses, setStatuses] = useState<Record<string, FoodStatusLike>>({});
   const { is_display_navigation } = useTitle();
   useEffect(() => {
-    fetch("/api/get_food")
+    fetch("/api/get_food/get_food_data")
       .then((res) => res.json())
       .then((data: { data: FoodCardInterface[] }) => {
-        console.log(data);
-        setFoods(data.data);
-        setLoading(false);
+        const list = data.data ?? [];
+        setFoods(list);
+        // 初期状態: 取得した全フードを LOADING に設定
+        const initial: Record<string, FoodStatusLike> = {};
+        for (const place of list) {
+          for (const f of place.foods) {
+            initial[f.id] = 'LOADING';
+          }
+        }
+        setStatuses(initial);
+        setLoading(false); // リストは表示し、ステータスはLOADINGで見せる
+
+        // ステータスの追加取得（非同期で上書き）
+        fetch('/api/get_food/get_food_status')
+          .then((r) => r.json())
+          .then((statusData: FoodStatusResponse) => {
+            const map: Record<string, FoodStatusLike> = { ...initial };
+            for (const place of statusData.data ?? []) {
+              for (const f of place.foods ?? []) {
+                map[f.id] = f.status;
+              }
+            }
+            setStatuses(map);
+          })
+          .catch(() => {
+            // エラー時は UNKNOWN にしておく
+            const unknownMap: Record<string, FoodStatusLike> = {};
+            for (const k of Object.keys(initial)) unknownMap[k] = 'UNKNOWN';
+            setStatuses(unknownMap);
+          });
       })
       .catch(() => setLoading(false));
   }, []);
@@ -76,7 +117,7 @@ function Page() {
           loading ? (
             <FoodListSkeleton />
           ) : (
-            <FoodList foods={foods} />
+            <FoodList foods={foods} statuses={statuses} />
           )
         ) : (
           <HowToBuy />

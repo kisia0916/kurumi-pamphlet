@@ -3,9 +3,9 @@ import { FoodData, Projects } from '@prisma/client'
 import React from 'react'
 import FoodCard from '../FoodCard/FoodCard'
 import Link from 'next/link'
-import { FoodCardInterface } from '@/app/food/page'
+import { FoodCardInterface, FoodStatusLike } from '@/app/food/page'
 
-function FoodPlace(props:{data:FoodCardInterface}) {
+function FoodPlace(props:{data:FoodCardInterface; statuses?: Record<string, FoodStatusLike>}) {
   props.data.foods.sort((a, b) => {
     const ai = a.food_index ?? 0
     const bi = b.food_index ?? 0
@@ -25,11 +25,11 @@ function FoodPlace(props:{data:FoodCardInterface}) {
           </Link>
 
       </div>
-        <div className='m-auto w-[94%] mt-5 grid grid-cols-2 gap-3 pb-8'>
-            {props.data.foods.map((food) => (
-            <FoodCard key={food.id} food={food} />
-        ))}
-        </div>
+    <div className='m-auto w-[94%] mt-5 grid grid-cols-2 gap-3 pb-8'>
+      {props.data.foods.map((food) => (
+      <FoodCard key={food.id} food={food} statusOverride={props.statuses?.[food.id]} />
+    ))}
+    </div>
     </div>
   )
 }
