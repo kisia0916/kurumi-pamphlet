@@ -61,8 +61,13 @@ export default function Page() {
         if (!res.ok) throw new Error('クイズデータの取得に失敗しました')
         const data = await res.json()
         const text = data?.data?.quiz_data ?? data?.quiz_data ?? ''
-        set_stamp_place_id(data?.data?.stampPlaceId ?? "")
-        set_quiz_text(text)
+        if (text === "goal"){
+          setIsCorrect(true)
+          setSubmitted(true)
+        }
+          set_stamp_place_id(data?.data?.stampPlaceId ?? "")
+          set_quiz_text(text)
+
       } catch (e) {
         setError('クイズデータの取得に失敗しました。時間をおいて再度お試しください。')
       } finally {
@@ -129,7 +134,7 @@ export default function Page() {
     <div className="min-h-screen w-full flex items-center justify-center p-4">
       <div className="w-full max-w-xl">
         <h1 className=" font-semibold mb-6 text-center text-lg">クイズに正解してスタンプをGET!</h1>
-        {!parsed ? (
+        {!parsed? (
           <p className="text-gray-500 text-center">クイズ形式が不正です。</p>
         ) : (
           <div className="space-y-6">

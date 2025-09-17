@@ -78,15 +78,16 @@ const StampLocationCard: React.FC<StampLocationCardProps> = ({
   return (
     <Card className='border-[1px] border-gray-200 h-full flex flex-col'>
         <CardContent className='p-0 h-full flex flex-col'>
-        <div className="w-full h-25 relative">
+        <div className="w-full h-25 relative flex items-center justify-center">
           <Image
             src={photoPath}
             alt={locationName}
-            fill
+            width={100}
+            height={100}
             className="object-cover rounded-t-md"
             sizes="100vw"
           />
-          <div className={`absolute bg-amber-300 rounded-tl-md rounded-br-[5px] px-3 py-1 text-xs font-bold text-gray-700 shadow `}>
+          <div className="absolute top-0 left-0 bg-amber-300 rounded-tl-md rounded-br-[5px] px-3 py-1 text-xs font-bold text-gray-700 shadow">
             {stampNumber}
           </div>
         </div>
