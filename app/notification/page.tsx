@@ -11,7 +11,7 @@ function Page() {
     <div className="w-full overflow-hidden ">
       {/* ヘッダ */}
       <div className="w-full h-17 flex">
-        <p className="main-font-thin text-2xl m-auto ml-5">準備中</p>
+        <p className="main-font-thin text-2xl m-auto ml-5">準備中です</p>
       </div>
 
       {/* タブ（Foodページと同じ見た目） */}
