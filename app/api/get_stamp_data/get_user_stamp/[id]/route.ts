@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = "force-dynamic"; // 静的化を防ぐ
+export const revalidate = 0;            // ISR 無効化
 
 export async function GET(request: NextRequest,{ params }: { params: Promise<{ id: string }> }) {
   try {

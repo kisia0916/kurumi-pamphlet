@@ -2,8 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import build from 'next/dist/build';
 import { cacheSuccessHeadersMini } from '../../_utils/cacheHeaders';
+
+
 
 export async function GET() {
   try {

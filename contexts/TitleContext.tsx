@@ -35,8 +35,8 @@ interface TitleContextType {
   setMapZoom: (zoom: number) => void;
   mapPins: {id:string,pin:MapPinData[]};
   setMapPins: (pins: {id:string,pin:MapPinData[]}) => void;
-  now_page: "map" | "food" | "stamp" | "event";
-  set_now_page: (page: "map" | "food" | "stamp" | "event") => void;
+  now_page: "map" | "food" | "stamp" | "event"|"notification";
+  set_now_page: (page: "map" | "food" | "stamp" | "event"|"notification") => void;
   navMode: 'full' | 'compact';
   setNavMode: (mode: 'full' | 'compact') => void;
   is_display_navigation: boolean;
@@ -57,7 +57,7 @@ export const TitleProvider = ({ children }: { children: ReactNode }) => {
   const [mapImg, setMapImg] = useState<string>('https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/mappic/loading_map.png');
   const [mapZoom, setMapZoom] = useState<number>(1);
   const [mapPins, setMapPins] = useState<{id:string,pin:MapPinData[]}>({id:"",pin:[]});
-  const [now_page, set_now_page] = useState<"map" | "food" | "stamp" | "event">("map");
+  const [now_page, set_now_page] = useState<"map" | "food" | "stamp" | "event"|"notification">("map");
   const [navMode, setNavMode] = useState<'full' | 'compact'>('full');
   const [is_display_navigation, set_is_display_navigation] = useState<boolean>(true);
   const [back_button_path,set_back_button_path] = useState<string>('/map');

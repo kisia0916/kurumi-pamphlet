@@ -232,5 +232,19 @@ model event_space {
   name        String
   color       String
   event_times event_time[]
+  index       Int?
+}
 
+enum NotificationType {
+  ALL
+  PART
+}
+
+model notifications {
+  id          String     @id @default(uuid())
+  createdAt   DateTime   @default(now())
+  title       String
+  content     String
+  link        String?
+  status      NotificationType @default(ALL)
 }

@@ -3,9 +3,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 function NavigationButton(props: {
-  now_page: "map" | "food" | "stamp" | "event",
-  set_now_page: (page: "map" | "food" | "stamp" | "event") => void,
-  page: "map" | "food" | "stamp" | "event",
+  now_page: "map" | "food" | "stamp" | "event"|"notification",
+  set_now_page: (page: "map" | "food" | "stamp" | "event"|"notification") => void,
+  page: "map" | "food" | "stamp" | "event"|"notification",
   icon: string,
   title: string,
   size:"l"|"s"
@@ -18,6 +18,7 @@ function NavigationButton(props: {
     food: '/food',
     stamp: '/stamp',
     event: '/event',
+    notification: '/notification'
   };
 
   const handleClick = () => {

@@ -30,6 +30,7 @@ function Navigation() {
       else if (pathname.startsWith('/food')) set_now_page('food');
       else if (pathname.startsWith('/stamp')) set_now_page('stamp');
       else if (pathname.startsWith('/event')) set_now_page('event');
+      else if (pathname.startsWith('/notification')) set_now_page('notification');
     }, [pathname, set_now_page]);
 
     const isCompact = viewportHeight > 0 && viewportHeight < 700;
@@ -63,7 +64,7 @@ function Navigation() {
       return (
         <div 
           className={`fixed bottom-5 right-5 z-[1000]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg `}
-          style={{ width: '50px', height: is_open_navigation ? '320px' : '50px' }}
+          style={{ width: '50px', height: is_open_navigation ? '390px' : '50px' }}
           ref={fabRef}
         >
           {is_open_navigation && (
@@ -72,6 +73,8 @@ function Navigation() {
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='food' icon='/kurumiIcon/food.svg' title='食べ物'  size='s'/>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='stamp' icon='/kurumiIcon/stamp.svg' title='スタンプ'  size='s'/>
             <NavigationButton now_page={now_page} set_now_page={set_now_page} page='event' icon='/kurumiIcon/time_table.svg' title='イベント'  size='s'/>
+            <NavigationButton now_page={now_page} set_now_page={set_now_page} page='notification' icon='/kurumiIcon/megaphone.svg' title='お知らせ'  size='s'/>
+
         </div>)}
           <button 
             onClick={() => set_is_open_navigation(!is_open_navigation)} 
@@ -104,6 +107,8 @@ function Navigation() {
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='food' icon='/kurumiIcon/food.svg' title='食べ物'  size='l'/>
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='stamp' icon='/kurumiIcon/stamp.svg' title='スタンプ'  size='l'/>
                 <NavigationButton now_page={now_page} set_now_page={set_now_page} page='event' icon='/kurumiIcon/time_table.svg' title='イベント'  size='l'/>
+                <NavigationButton now_page={now_page} set_now_page={set_now_page} page='notification' icon='/kurumiIcon/megaphone.svg' title='お知らせ'  size='l'/>
+
             </div>
         </nav>
       )
