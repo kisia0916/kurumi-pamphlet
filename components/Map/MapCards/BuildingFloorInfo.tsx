@@ -71,7 +71,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
         <div className='w-full flex h-12 justify-between items-center'>
             <div className="relative">
               <button 
-                className="flex items-center gap-2 text-[16px] main-font-thin bg-gradient-to-r bg-amber-300 text-black px-3 rounded-full transition-all duration-200 cursor-pointer mt-[12px] h-8"
+                className="flex items-center gap-2 text-[16px] main-font-thin bg-gradient-to-r bg-blue-300 text-black px-3 rounded-full transition-all duration-200 cursor-pointer mt-[12px] h-8"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <span>{selectedFloor.floor_text}</span>
