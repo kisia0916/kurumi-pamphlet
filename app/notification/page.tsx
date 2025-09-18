@@ -100,7 +100,9 @@ function Page() {
                   description={n.content}
                   tags={[n.status === 'ALL' ? '全体お知らせ' : '生徒用お知らせ']}
                   date={n.createdAt as unknown as string}
-                  href={n.link ?? '#'}
+                  href={n.link??
+                   ""
+                  }
                 />
               ))
             )}
