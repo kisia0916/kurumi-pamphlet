@@ -37,7 +37,7 @@ function NavigationButton(props: {
             style={{ transform: 'translate(-50%, -50%)' }}
           ></div>
         ) : null}
-        <Image src={props.icon} alt={props.title} width={props.size === 'l' ? 24 : 16} height={props.size === 'l' ? 24 : 16} className={props.size === "l"?'w-6 h-6 m-auto':'w-4 h-4 m-auto'} />
+        <Image src={props.icon} alt={props.title} width={props.size === 'l' ? 16 : 16} height={props.size === 'l' ? 16 : 16} className={props.size === "l"?'w-6 h-6 m-auto':'w-4 h-4 m-auto'} />
       </div>
       <div className='w-full flex mt-[2px] justify-center'>
         <span className={`text-xs main-font-thin ${props.size === "l"?"text-[11px]":"text-[9px]"} text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full block`}>{props.title}</span>

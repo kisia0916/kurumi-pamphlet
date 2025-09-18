@@ -21,6 +21,7 @@ export type TimelineProps = {
   startHour?: number; // default 9
   endHour?: number; // default 17
   hourHeight?: number; // default 80(px)
+  minMode?: number; // default 50(px) 最小表示高さ
 };
 
 const MapOpenButton = (props:{path:string,color:string}) => {
@@ -43,6 +44,7 @@ export default function TimeLine({
   startHour = 9,
   endHour = 17,
   hourHeight = 120,
+  minMode = 50
 }: TimelineProps) {
   const hours = React.useMemo(
     () => Array.from({ length: endHour - startHour + 1 }, (_, i) => startHour + i),
@@ -92,6 +94,7 @@ export default function TimeLine({
         <div className="absolute inset-0 ml-16 pl-3">
           {events.map((ev) => {
             const { top, height } = toPosition(ev.start, ev.end);
+            console.log(height)
             return (
               <div
                 key={ev.id}
@@ -100,7 +103,7 @@ export default function TimeLine({
               >
                 {/* 左側の黄色いライン */}
                 <div className={`absolute left-0 top-0 h-full w-2 bg-${color}-400 rounded-l-2xl" aria-hidden="true`}/>
-                <div className="h-full overflow-y-auto p-3 pl-4 flex justify-between">
+                <div className={`h-full overflow-y-auto p-3  pl-4 flex justify-between ${height>minMode?"pt-3":"pt-0"}`}>
                     <div>
                     <p className="text-sm font-medium line-clamp-2">{ev.title}</p>
                     <p className="text-xs text-neutral-600 mb-2">
