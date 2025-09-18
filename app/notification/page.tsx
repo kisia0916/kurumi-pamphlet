@@ -68,7 +68,7 @@ function Page() {
             {error && (
               <p className="text-sm text-red-600">{error}</p>
             )}
-            {loading ? (
+            {loading && !error? (
               <div className="space-y-4">
                 {/* Card skeleton 1 */}
                 <div className="rounded-xl border bg-card/50 p-8">
