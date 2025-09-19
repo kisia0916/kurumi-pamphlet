@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useTitle } from '@/contexts/TitleContext'
 import { ProjectCardMiniProps } from '@/app/map/layout'
 
-function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:string,toilets:string}[]}) {
+function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:string,toilets:string,status:"hard"|"empty"|"middle"}[]}) {
   const query = useSearchParams()
   const [selectedFloor, setSelectedFloor] = useState<{floor_text:string,id:string,map_img:string,toilets:string}>(() => {
     if (!props.floor_list || props.floor_list.length === 0) return { floor_text:'', id:'', map_img:'',toilets:'' }
@@ -31,6 +31,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
   const router = useRouter()
   const { title,setTitle } = useTitle();
   const [project_list,set_project_list] = useState<ProjectCardMiniProps[]>([])
+  const [floor_status,set_floor_status] = useState<"hard"|"empty"|"middle"|"unknown">("unknown")
   
   // 一覧用に変換
   const floor_transform = (props.floor_list||[]).map(f=> ({
@@ -49,14 +50,18 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
     router.push(`/map/floor/${selectedFloor.id}`)
   }
   useEffect(()=>{
-
-    console.log(selectedFloor)
+    set_floor_status("unknown")
     const get_floor_project_data = async()=>{
       try {
         const project_data = await fetch(`/api/get_floor_data/get_floor_project_list/${selectedFloor.id}`)
         const data_json = await project_data.json()
         const projects:ProjectCardMiniProps[] = data_json.data
         set_project_list(Array.isArray(projects) ? projects : [])
+        const status = await fetch(`/api/get_floor_data/get_floor_status/${selectedFloor.id}`)
+        if (!status.ok) set_floor_status("unknown")
+        const status_json = await status.json()
+        const floor_status = status_json.data
+        set_floor_status(floor_status ? floor_status.status : "unknown")
       } catch (error) {
         set_project_list([])
       }
@@ -79,7 +84,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
               </button>
               
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-24 overflow-hidden">
+                <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 min-w-24 overflow-hidden">
                   {floors.map((floor) => {
                     const found = floor_transform.find(f=>f.text===floor)
                     return (
@@ -115,7 +120,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
             </div>
         </div>
     <div className='w-full'>
-      <MiniMap map_img={selectedFloor.map_img} floor_id={selectedFloor.id}/>
+      <MiniMap map_img={selectedFloor.map_img} floor_id={selectedFloor.id} status={floor_status}/>
     </div>
         <div className='w-full flex mt-3'>
             {/* <Button 
@@ -150,7 +155,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
             </div>
           ) : (
             project_list.map(project => (
-              <ProjectCardMini key={project.id} project={project} />
+              <ProjectCardMini key={project.id} project={project}/>
             ))
           )}
           <div className='h-5' />

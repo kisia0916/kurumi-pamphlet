@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import MapPinComponent from './MapPin';
 import { Buildings, Floor,Projects } from '@prisma/client';
+import { Badge } from '@/components/ui/badge';
 
 export interface MapPinData {
   id: string;
@@ -19,7 +20,7 @@ export interface MapPinData {
 }
 
 
-function MiniMap(props:{map_img:string,floor_id:string}) {
+function MiniMap(props:{map_img:string,floor_id:string,status:"hard"|"empty"|"middle"|"unknown"}) {
     const [miniMapPins, setMiniMapPins] = useState<MapPinData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -56,9 +57,25 @@ function MiniMap(props:{map_img:string,floor_id:string}) {
       console.error("zoomToElement エラー:", err)
     }
     },[])
+
+    const statusLabel =
+      props.status === 'hard' ? '混雑' :
+      props.status === 'middle' ? 'やや混雑' :
+      props.status === 'empty' ? '空き' : '不明';
+
+    // ステータスに応じて色を切替
+    const statusClass =
+      props.status === 'hard' ? 'bg-red-400 text-white' :
+      props.status === 'middle' ? 'bg-amber-400 text-white' :
+      props.status === 'empty' ? 'bg-green-400 text-white' :
+      'bg-gray-400 text-white';
   return (
     <div className='w-full z-10'>
-        <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2 overflow-hidden'>
+        <div className='w-full h-[200px] bg-gray-50 rounded-2xl border-[1px] border-gray-200 mt-2 overflow-hidden relative'>
+            {/* 右上ステータス（パン/ズーム操作に干渉しないよう pointer-events-none） */}
+            <div className="absolute top-2 left-2 z-20 pointer-events-none">
+              <Badge className={`h-7 pointer-events-none ${statusClass} rounded-full`}>{statusLabel}</Badge>
+            </div>
             <TransformWrapper
             ref={zoomRef}
             initialScale={1}

@@ -8,7 +8,6 @@ import { ProjectCardMiniProps } from '@/app/map/layout'
 
 function ProjectCardMini(props:{project:ProjectCardMiniProps}) {
   const { project } = props
-  console.log(project)
   const onGenreClick: React.MouseEventHandler<HTMLSpanElement> = (e) => {
     e.preventDefault()
     e.stopPropagation()

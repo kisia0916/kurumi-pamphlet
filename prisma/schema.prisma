@@ -121,6 +121,7 @@ model Floor {
   projects    Projects[]
   mapPins     MapPin[]
   toilets     toilets?
+  status      BuildingStatusType?
 }
 
 model Projects {

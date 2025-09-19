@@ -15,7 +15,8 @@ interface Floor {
   building_id: string
   floor_num: number,
   floor_map_img: string
-  toilets: string
+  toilets: string,
+  status:"hard"|"middle"|"empty"
 }
 
 interface Project {
@@ -85,7 +86,7 @@ function BuildingInfoCard() {
     const [statusData, setStatusData] = useState<BuildingStatus[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
-    const [floor_list,set_floor_list] = useState<{floor:number,id:string,map_img:string,toilets:string}[]>([])
+    const [floor_list,set_floor_list] = useState<{floor:number,id:string,map_img:string,toilets:string,status:"hard"|"middle"|"empty"}[]>([])
 
   useEffect(()=>{
     const fetchData = async () => {
@@ -93,25 +94,25 @@ function BuildingInfoCard() {
           setLoading(true)
           console.log(buildingId)
           const buildingResponse = await  fetch(`/api/get_building/${buildingId}`)
-        if (!buildingResponse.ok) {
-          throw new Error('建物データの取得に失敗しました');
-        }
-        const buildingResult: ApiResponse<BuildingData> = await buildingResponse.json()
+          if (!buildingResponse.ok) {
+            throw new Error('建物データの取得に失敗しました');
+          }
+          const buildingResult: ApiResponse<BuildingData> = await buildingResponse.json()
 
-        setBuildingData(buildingResult.data)
-        set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img,toilets:floor.toilets})).sort((a,b)=>a.floor-b.floor))
+          setBuildingData(buildingResult.data)
+          set_floor_list(buildingResult.data.floors.map((floor)=>({floor:floor.floor_num,id:floor.id,map_img:floor.floor_map_img,toilets:floor.toilets,status:floor.status})).sort((a,b)=>a.floor-b.floor))
 
-        if (buildingResult.data) {
-          setTitle(buildingResult.data.name)
-        }
-        setLoading(false)
+          if (buildingResult.data) {
+            setTitle(buildingResult.data.name)
+          }
+          setLoading(false)
 
-        const statusResponse = await fetch(`/api/get_status/get_one_status/${buildingId}`)
-        if (!statusResponse.ok) {
-          throw new Error('ステータスデータの取得に失敗しました');
-        }
-        const statusResult: StatusApiResponse = await statusResponse.json()
-        setStatusData(statusResult.data)
+          const statusResponse = await fetch(`/api/get_status/get_one_status/${buildingId}`)
+          if (!statusResponse.ok) {
+            throw new Error('ステータスデータの取得に失敗しました');
+          }
+          const statusResult: StatusApiResponse = await statusResponse.json()
+          setStatusData(statusResult.data)
       } catch (error) {
         setError(error instanceof Error ? error.message : 'データの取得に失敗しました')
       } 
