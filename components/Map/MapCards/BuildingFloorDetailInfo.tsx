@@ -21,6 +21,7 @@ function BuildingFloorDetailInfo() {
   const [floorInfo,setFloorInfo] = useState<Floor | null>(null)
   const [loading,setLoading] = useState(true)
   const [error,setError] = useState<string | null>(null)
+  const [floor_status,set_floor_status] = useState<"hard"|"empty"|"middle"|"unknown">("unknown")
   const { setTitle,setMapImg,setMapPins,setShowBackButton,set_back_button_path } = useTitle()
   const params = useParams()
   const floor_Id = Array.isArray(params.id) ? params.id[0] : params.id
@@ -29,25 +30,29 @@ function BuildingFloorDetailInfo() {
       try {
 
         setLoading(true)
-        const [projectsRes, floorInfoRes,floorMapPins] = await Promise.all([
+        const [projectsRes, floorInfoRes,floorMapPins,floor_status_data] = await Promise.all([
           fetch(`/api/get_floor_data/get_floor_project_list/${floor_Id}`, {
             method: 'GET',
           }),
           fetch(`/api/get_floor_data/get_floor_info/${floor_Id}`, {
             method: 'GET',
           }),
-          fetch(`/api/get_map_pin/get_floor_project_pin/${floor_Id}` )
+          fetch(`/api/get_map_pin/get_floor_project_pin/${floor_Id}` ),
+          fetch(`/api/get_floor_data/get_floor_status/${floor_Id}` ),
         ])
 
         if (!projectsRes.ok) throw new Error('プロジェクト取得失敗')
         if (!floorInfoRes.ok) throw new Error('階情報取得失敗')
         if (!floorMapPins.ok) throw new Error('フロアマップピン取得失敗')
+
         const projectsJson = await projectsRes.json()
         const floorInfoJson = await floorInfoRes.json()
+        const floor_status_json = await floor_status_data.json()
         const floorData:Floor_include_Building = floorInfoJson.data
         const projectData:ProjectCardMiniProps[] = projectsJson.data
         const floorMapPinsData = await floorMapPins.json()
         set_project_list(projectData || [])
+        set_floor_status(floor_status_json.data.status || "unknown")
         setMapImg(floorData.floor_map_img)
         if (typeof floor_Id === 'string') {
           const pinsWithSelection = (floorMapPinsData.data || []).map((p:any)=> ({...p, is_selected: Boolean(p.is_selected) }))
@@ -90,6 +95,21 @@ function BuildingFloorDetailInfo() {
   return (
     <div className='w-[90%] m-auto'>
         <div className='w-full flex main-font-thin mt-1 '>
+                      {(() => {
+              const label =
+                floor_status === 'empty' ? '空き' :
+                floor_status === 'middle' ? '通常' :
+                floor_status === 'hard' ? '混雑' : '不明'
+              const colorClass =
+                floor_status === 'empty' ? 'bg-green-400' :
+                floor_status === 'middle' ? 'bg-amber-400' :
+                floor_status === 'hard' ? 'bg-red-400' : 'bg-gray-400'
+              return (
+                <Badge className={`w-fit px-4 h-8 rounded-full mr-2 ${colorClass} text-black`}>
+                  <span className='text-black'>{label}</span>
+                </Badge>
+              )
+            })()}
             <Badge className='w-fit px-4 h-8 rounded-full bg-gray-400 text-black '>
               <span className='text-white'>企画数 {project_list.length}</span>
             </Badge>
