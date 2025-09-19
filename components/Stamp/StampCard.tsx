@@ -68,10 +68,14 @@ function StampCard(props:{stamp_data:StampData[],user_stamp_data:UserStampData[]
               )}
 
             </CardContent>
-                <div className='w-full flex relative z-20 mb-6'>
-                <div className='w-[60%] bg-white m-auto rounded-full flex'>
-                  <span className='main-font-thin m-auto text-[12px] text-gray-600 '>すべて集めて景品と交換</span>
-                </div>
+                <div className='w-full flex relative z-20 mb-6 px-4'>
+                  <div className='mx-auto max-w-[92%] bg-white rounded-full border border-gray-200  px-4 py-2 flex items-center gap-2'>
+                    <Gift className='w-4 h-4 text-amber-500 flex-shrink-0' />
+                    <div className='flex-1 text-center leading-tight'>
+                      <p className='main-font-thin text-[13px] text-gray-800'>すべて集めて景品と交換</p>
+                      <p className='main-font-thin text-[10px] text-gray-500'>（景品には限りがあります）</p>
+                    </div>
+                  </div>
                 </div>
           </Card>
           
