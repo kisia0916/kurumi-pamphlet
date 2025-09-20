@@ -137,7 +137,7 @@ function BuildingInfoCard() {
       case 'hard':
         return { text: '混雑', className: 'bg-red-500 text-white' }
       case 'middle':
-        return { text: '中程度', className: 'bg-yellow-500 text-white' }
+        return { text: 'やや混雑', className: 'bg-yellow-500 text-white' }
       case 'empty':
         return { text: '空いている', className: 'bg-green-500 text-white' }
       default:

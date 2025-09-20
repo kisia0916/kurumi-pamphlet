@@ -24,7 +24,7 @@ function BuildingInfoCard(props: {
       case 'hard':
         return { color: 'bg-red-400', text: '混雑' };
       case 'middle':
-        return { color: 'bg-yellow-400', text: '通常' };
+        return { color: 'bg-yellow-400', text: 'やや混雑' };
       case 'empty':
         return { color: 'bg-green-400', text: '空いている' };
       case 'loading':
