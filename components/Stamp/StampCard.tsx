@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '../ui/card'
-import { Gift } from 'lucide-react'
+import { Gift, Info } from 'lucide-react'
 import { StampData, UserStampData } from '@/app/stamp/page'
 
 type Props = {
@@ -66,6 +66,16 @@ function StampCard(props:{stamp_data:StampData[],user_stamp_data:UserStampData[]
                   ))}
                 </div>
               )}
+
+              {/* 更新注意メッセージ */}
+              <div className="w-full flex justify-center mt-3">
+                <div className="flex items-start gap-1 text-[11px] text-gray-500 leading-snug">
+                  <Info className="w-3.5 h-3.5 mt-[2px] flex-shrink-0 text-gray-400" />
+                  <p className="main-font-thin">
+                    スタンプが反映されない場合は、ページを再読み込みすると更新されることがあります。
+                  </p>
+                </div>
+              </div>
 
             </CardContent>
                 <div className='w-full flex relative z-20 mb-6 px-4'>
