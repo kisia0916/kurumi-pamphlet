@@ -72,7 +72,7 @@ function StampCard(props:{stamp_data:StampData[],user_stamp_data:UserStampData[]
                 <div className="flex items-start gap-1 text-[11px] text-gray-500 leading-snug">
                   <Info className="w-3.5 h-3.5 mt-[2px] flex-shrink-0 text-gray-400" />
                   <p className="main-font-thin">
-                    スタンプが反映されない場合は、ページを再読み込みすると更新されることがあります。
+                    スタンプが反映されない場合は、ページを再読み込みすると更新される場合があります。
                   </p>
                 </div>
               </div>
