@@ -98,7 +98,7 @@ function BuildingFloorDetailInfo() {
                       {(() => {
               const label =
                 floor_status === 'empty' ? '空き' :
-                floor_status === 'middle' ? '通常' :
+                floor_status === 'middle' ? 'やや混雑' :
                 floor_status === 'hard' ? '混雑' : '不明'
               const colorClass =
                 floor_status === 'empty' ? 'bg-green-400' :
