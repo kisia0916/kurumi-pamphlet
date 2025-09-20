@@ -105,8 +105,8 @@ function BuildingFloorDetailInfo() {
                 floor_status === 'middle' ? 'bg-amber-400' :
                 floor_status === 'hard' ? 'bg-red-400' : 'bg-gray-400'
               return (
-                <Badge className={`w-fit px-4 h-8 rounded-full mr-2 ${colorClass} text-black`}>
-                  <span className='text-black'>{label}</span>
+                <Badge className={`w-fit px-4 h-8 rounded-full mr-2 ${colorClass} text-white`}>
+                  <span className='text-white'>{label}</span>
                 </Badge>
               )
             })()}
