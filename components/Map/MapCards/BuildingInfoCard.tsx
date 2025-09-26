@@ -202,7 +202,7 @@ function BuildingInfoCard() {
                   </div>
                 </div>
 
-                <div className="text-center">
+                <div className="text-center w-[36px]">
                   <div className="flex flex-col items-center gap-2">
                     <div className="p-2 bg-orange-100 rounded-full">
                       <Users className="h-5 w-5 text-orange-600" />

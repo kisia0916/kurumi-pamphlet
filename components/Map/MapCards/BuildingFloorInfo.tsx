@@ -90,7 +90,7 @@ function BuildingFloorInfo(props:{floor_list:{floor:number,id:string,map_img:str
                     return (
                       <button
                         key={floor}
-                        className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors "
+                        className="main-font-thin w-full text-left px-4 py-3 hover:bg-gray-50 text-sm main-font-thin transition-colors "
                         onClick={() => {
                           if (found) setSelectedFloor({ floor_text: found.text, id: found.id, map_img: found.map_img,toilets: found.toilet })
                           setIsDropdownOpen(false)
