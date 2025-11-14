@@ -5,12 +5,14 @@ import { useTitle } from '@/contexts/TitleContext';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { max_width } from '@/lib/utils';
+import Base from '@/components/KurumiAI/Base';
 
 function Navigation() {
     const { now_page, set_now_page, setNavMode, set_is_display_navigation,is_open_navigation,set_is_open_navigation } = useTitle();
     const pathname = usePathname();
     const [viewportHeight, setViewportHeight] = useState(0);
   const fabRef = useRef<HTMLDivElement | null>(null);
+  const [isAiOpen, setIsAiOpen] = useState(false);
     useEffect(() => {
       const handleResize = () => {
         if (window.innerHeight < 700){
@@ -87,6 +89,33 @@ function Navigation() {
       )
     }else{
       return (
+        <>
+        <div 
+          className={`fixed bottom-20 right-5 z-[1000] transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg`}
+          style={{ width: '50px', height: '50px' }}
+          ref={fabRef}
+        >
+          {/* AI パネル（ボタンの上に表示） */}
+          {isAiOpen && (
+            <div className="absolute right-0 bottom-[60px]">
+              <Base />
+            </div>
+          )}
+          <button 
+            onClick={() => setIsAiOpen(v => !v)} 
+            className="absolute right-0 bottom-0 w-[50px] h-[50px] flex items-center justify-center bg-white text-white rounded-full focus:outline-none border-1 border-gray-700"
+            aria-label={isAiOpen ? 'Close AI' : 'Open AI'}
+          >
+            {/* aiエージェント起動ボタン: 起動中はバツボタンに切替 */}
+            {isAiOpen ? (
+              <X size={24} className='text-black'/>
+            ) : (
+              <span className="main-font text-[20px] bg-gradient-to-r from-pink-400 to-amber-400 bg-clip-text text-transparent select-none">
+                AI
+              </span>
+            )}
+          </button>
+        </div>
         <nav style={{
           position: 'fixed',
           left: '50%',
@@ -111,6 +140,7 @@ function Navigation() {
 
             </div>
         </nav>
+        </>
       )
     }
 

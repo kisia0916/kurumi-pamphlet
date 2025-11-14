@@ -17,9 +17,12 @@
     "migrate-to-uuid": "npm run backup-schema && npm run restore-int-schema && npm run export-data && npm run restore-uuid-schema && npm run setup-uuid-db && npm run import-data"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.65",
+    "@datastax/astra-db-ts": "^2.1.2",
     "@prisma/client": "^6.11.1",
     "@radix-ui/react-slot": "^1.2.3",
     "@vercel/analytics": "^1.5.0",
+    "ai": "^5.0.92",
     "class-variance-authority": "^0.7.1",
     "clipboard-copy": "^4.0.1",
     "clsx": "^2.1.1",
