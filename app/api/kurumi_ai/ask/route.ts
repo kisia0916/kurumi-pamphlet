@@ -1,62 +1,216 @@
 import { connection_db } from "@/lib/astradb"
 import { NextRequest, NextResponse } from "next/server"
-import { streamText } from "ai";
+import { convertToModelMessages, generateText, streamText, UIMessage } from "ai";
 import { openai } from "@ai-sdk/openai";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => null)
     const messages = body && Array.isArray(body.messages) ? body.messages : []
-
     if (messages.length === 0) {
       return NextResponse.json({ error: 'missing_messages' }, { status: 400 })
     }
-
     const lastUserMessage = messages.filter((m: any) => m.role === 'user').pop()
     const searchQuery = lastUserMessage?.content || ''
-
     if (!searchQuery) {
-      return NextResponse.json({ error: 'no_user_message' }, { status: 400 })
+      return NextResponse.json({ error: 'no_user_message' }, { status: 401 })
     }
+    const  rewriteRes = await generateText({
+      model: openai("gpt-4o-mini"),
+      system:`
+          あなたはベクトル検索用の最適な検索クエリに変換するアシスタントです。" +
+        【重要ルール】
+          1. ユーザーの質問の意図を正確に把握し、ベクトル検索に必要なキーワードのみ抽出して出力してください。
+          2. 出力は一文のみ。
+          3. 不要な説明や装飾的な言葉は一切含めないでください。
+          4. ユーザーの要求がある特定の要素を指定したものでない場合は出力の最後にrandomを追加してください。
+        【出力例】
+          1. テニス 企画 場所
+          2. フードコート 食品 販売時間 random
+          `
+          ,
+      messages:[{
+        role: "user",
+        content: searchQuery,
+      },]
+    });
+    let processed_rewrite:string = rewriteRes.text.trim(); 
+     if (rewriteRes.text.trim().includes("random")) {
+      processed_rewrite = rewriteRes.text.replace("random", "").trim() + " " + Math.random().toString(36).substring(2, 8);
+     }
+    //検索
+    const projectOr: any[] = [];
+    for (const p of processed_rewrite.split(" ")) {
+        projectOr.push({ name: { contains: p, mode: "insensitive" } });
+        projectOr.push({ room_name: { contains: p, mode: "insensitive" } });
+        projectOr.push({ project_genre: { contains: p, mode: "insensitive" } });
+        projectOr.push({ team_name: { contains: p, mode: "insensitive" } });
 
+    }
+    const projects = await prisma.projects.findMany({
+      where: { OR: projectOr },
+      select: {
+        id: true,
+        name: true,
+        picture: true,
+        room_name: true,
+        project_genre: true,
+        team_name: true,
+        floor_id: true,
+        building: { select: { id: true, name: true, index: true } },
+        floor: { select: { id: true, floor_num: true } }
+      }
+    })
+    // Shuffle projects randomly and take top 5
+    const shuffledProjects = [...projects]
+    for (let i = shuffledProjects.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffledProjects[i], shuffledProjects[j]] = [shuffledProjects[j], shuffledProjects[i]]
+    }
+    const limitedProjects = shuffledProjects.slice(0, 5)
     const db = connection_db()
     const collection = await db.collection("kurumi_data_01");
     const vectorCursor = collection.find(
       {},
       {
-        sort: { $vectorize: searchQuery },
-        limit: 4,
+        sort: { $vectorize: processed_rewrite },
+        limit: 5,
       },
     );
-    let results = [];
+    let results:any[] = [...limitedProjects];
     for await (const document of vectorCursor) {
       results.push(document);
     }
-    const context = results.map(x => JSON.stringify(x, null, 2)).join("\n---\n");
-    const ai_response = await streamText({
+    // 全フロアのステータスを取得し、指定の形式で整形
+    const floors = await prisma.floor.findMany({
+      include: { building: { select: { name: true } } }
+    })
+    const floorStatusList = floors.map((f) => ({
+      building: f.building?.name || "",
+      floor: f.floor_num < 0 ? `B${Math.abs(f.floor_num)}階` : `${f.floor_num}階`,
+      status: f.status ?? null,
+    }))
+
+    // 全ビルの最新ステータスを取得
+    const buildings = await prisma.buildings.findMany({
+      select: {
+        name: true,
+        statusHistory: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+          select: { status: true }
+        }
+      }
+    })
+    const buildingStatusList = buildings.map((b) => ({
+      building: b.name,
+      status: b.statusHistory?.[0]?.status ?? null,
+    }))
+
+    // 全食品の販売状況ステータス取得（名前とステータスのみ）
+    const foodStatusRows = await prisma.foodData.findMany({
+      select: { name: true, status: true }
+    })
+    const foodStatusList = foodStatusRows.map(f => ({ name: f.name, status: f.status }))
+
+    const context = [
+      ...results.map((x) => JSON.stringify(x, null, 2)),
+      JSON.stringify({type:"Floor_Congestion_status",data:floorStatusList}, null, 2),
+      JSON.stringify({type:"Building_Congestion_status",buildingStatusList}, null, 2),
+      JSON.stringify({type:"Food_sales_situation",foodStatusList}, null, 2),
+    ].join("\n---\n");
+    // 直近3件の会話のみをAIに渡す
+    const recentMessages = messages
+      .slice(-4)
+      .map((m: any) => ({ role: m.role, content: m.content }))
+
+    const ai_response = await generateText({
       model: openai("gpt-4o-mini"),
       system:`
+        
       あなたは文化祭デジタルパンフレットアプリ専用のAIアシスタントです。
+      JSON形式以外で出力をすることは絶対に禁止です。
+      回答は必ず以下の【回答ルール】と【回答の仕方】に従って行ってください。
+      ----------------------------------------------------------
+      【回答ルール】
+      あなたは必ず JSON オブジェクトを順番に出力します。
+      JSON形式以外で出力をすることは絶対に禁止です。
+      出力は常に次の2種類のみです：
 
-     【重要ルール】
-      1. 回答は必ず、ユーザー入力に基づいて vectorDB から取得された JSON データ(context)の内容を根拠として行ってください。
-      2. context に存在しない情報については推測せず、「わかりません」「データがありません」などとはっきり答えてください。
-      3. 文化祭に関係しない質問には回答せず、「このAIは文化祭に関する質問にのみ回答できます。」と返してください。
-      4. context の内容を正確に引用し、丁寧でわかりやすい文章で回答してください。
-      5. 最もユーザーの希望に合致するContextのtypeがイベントの場合、場所を答える際は最もユーザーの希望に合致するContextのtypeが企画のものを参考にしてください。
-    【目的】
-      ユーザーが文化祭の模擬店、食品販売状況、マップ、イベントのタイムテーブルなどを簡単に確認できるようサポートすることです。
-    【Context】
+      1. 文章を送るとき（ユーザーに表示する文章）：
+      {"type": "text","delta": "<文章の断片>"}
+
+      2. 企画に対応する project_id を送るとき（UI がカードを表示するためのメタ情報）：
+      {"type": "project","project_id": "<id>"}
+
+      注意：
+      - 無駄な改行を含まずに出力
+      - 上記以外のフィールドを追加してはならない。
+      - projectのJSONは必要な場合のみ送信すればよい
+      - text と project の JSON を混ぜない。
+      - textにはユーザーに伝えるべきレスポンスを入れて一回のみ送信すること。
+      - 各jsonの間には||をつけて送信すること
+
+      ----------------------------------------------------------
+      【文化祭アシスタントとしての回答ルール】
+      1. 回答の際は、与えられた Context の中から、スコアにかかわらず
+      「ユーザーの希望に最も合致する情報」を根拠として回答してください。
+
+      2. 回答は必ず、ユーザー入力に基づいてContext内のJSONデータの内容を根拠として行ってください。
+
+      4. Context に存在しない情報については推測せず、
+      「わかりません」「データがありません」などと明確に答えてください。
+
+      5. 文化祭に関係しない質問には回答せず、
+      {"type":"text","delta":"このAIは文化祭に関する質問にのみ回答できます。"}
+      のように回答してください。
+
+      6. Context の内容は正確に引用し、
+      丁寧でわかりやすいかつ一般的に理解可能な文章で、回答してください。
+
+      7. 最もユーザーの希望に合致する Context の type がイベントの場合、
+      場所を答える際は、最もユーザーの希望に合致する type が企画のものを参考にしてください。
+
+      8. Context 情報の優先度は以下の順とします：
+          1. name
+          2. team_name
+          3. description
+      9. jsonのdeltaに含める文章余計な装飾はせずに170文字以内に極力抑えてください
+      10. Contextには各建物と各フロアのリアルタイムの混雑状況データも含まれています。ユーザーへの提案などの際に必要に応じて利用してください。
+      11. Contextには食品のリアルタイムの販売状況も含まれています。ユーザーへの提案などの際に必要に応じて利用してください。
+
+      ----------------------------------------------------------
+      【回答の仕方】
+      あなたは回答をJSON形式で送った後、
+      必要に応じて最後に project_idを入れたJSON を必要な分だけ送ります。
+      例1.
+      {"type":"text","delta":"〜文章1〜"}||{"type":"project","project_id":"12345"}||{"type":"project","project_id":"34544"}
+      例2.
+      {"type":"text","delta":"〜文章1〜"}
+      【Context】
       ${context}
+      JSON形式以外で出力をすることは絶対に禁止です。
       `,
-      messages: [
-        ...messages.map((m: any) => ({ role: m.role, content: m.content })),
-        { role: "system", content: `Context:\n${context}` },
-      ],
+      messages: recentMessages,
     })
+    const split_text = ai_response.text.split("||");
+    const parsed_responses: any[] = split_text
+      .map((t) => {
+        const s = t?.trim();
+        if (!s) return null
+        try { return JSON.parse(s) } catch { return null }
+      })
+      .filter((obj): obj is Record<string, any> => !!obj && typeof obj === 'object');
 
-    return ai_response.toTextStreamResponse();
-    return 
+    const convert_responses: any[] = parsed_responses.filter((obj) => obj.type === 'text');
+
+    const response_text: string =
+      (convert_responses[0]?.delta as string) || "エラーが発生しました";
+    console.log(ai_response.text);
+    // type === 'project' の要素をすべて配列で返す
+    const response_jsons: any[] = parsed_responses.filter((obj) => obj.type === "project");
+    return NextResponse.json({ message: response_text, json: response_jsons }, { status: 200 })
   } catch (e) {
     console.error(e)
     return NextResponse.json({ error: 'internal_error' }, { status: 500 })

@@ -4,14 +4,11 @@ import ChatInput from './ChatInput'
 import ChatMessageList, { ChatMessage, ChatRole } from './ChatMessageList'
 
 function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
-  // OpenAI互換のメッセージモデル（system/user/assistant）
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     { id: "121314", role: 'system', content: 'You are a helpful assistant for the school festival app.' },
-    { id: "988900", role: 'assistant', content: 'こんにちは！AI 質問所です。文化祭に関する質問があれば入力してください。' },
+    { id: "988900", role: 'assistant', content: 'こんにちは！KurumiAIです。文化祭に関することならなんでもお答えします！' },
   ])
   const [isLoading, setIsLoading] = useState(false)
-
-  // OpenAI API へ送る際の変換（例）
   const openAIMessages = useMemo(() => (
     messages.map(m => ({ role: m.role as ChatRole, content: m.content }))
   ), [messages])
@@ -21,9 +18,10 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
     props.setWidthPx(320)
   },[])
 
+
   const handleSend = useCallback(async (text: string) => {
     // ユーザーメッセージを追加
-    const userMessage: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: text }
+    const userMessage: ChatMessage = { id: `${Date.now()}-${Math.random()}`, role: 'user', content: text }
     setMessages(prev => [...prev, userMessage])
     setIsLoading(true)
 
@@ -41,40 +39,17 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
         throw new Error('API request failed')
       }
 
-      // ストリーミングレスポンスを読み取る
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
-      
-      if (!reader) {
-        throw new Error('No response body')
-      }
+      // 非ストリーム: テキストとしてまとめて受信
+      const textBody:any = await response.json();
+      console.log("AI Response:",textBody);
+      // 表示用アシスタントメッセージを合成
+      const assistantId = `${Date.now()}-${Math.random()}`
 
-      // アシスタントメッセージを作成
-      const assistantId = crypto.randomUUID()
-      let assistantContent = ''
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const chunk = decoder.decode(value, { stream: true })
-        assistantContent += chunk
-
-        // メッセージをリアルタイム更新
-        setMessages(prev => {
-          const existing = prev.find(m => m.id === assistantId)
-          if (existing) {
-            return prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
-          } else {
-            return [...prev, { id: assistantId, role: 'assistant', content: assistantContent }]
-          }
-        })
-      }
+      setMessages(prev => [...prev, { id: assistantId, role: 'assistant', content: textBody.message,json_data:textBody.json }])
     } catch (error) {
       console.error('Error sending message:', error)
-      // エラーメッセージを表示
       setMessages(prev => [...prev, {
-        id: crypto.randomUUID(),
+        id: `${Date.now()}-${Math.random()}`,
         role: 'assistant',
         content: '申し訳ありません。エラーが発生しました。もう一度お試しください。'
       }])
@@ -84,11 +59,13 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
   }, [openAIMessages])
 
   return (
-    <div className='w-full h-full'>
+    <div className='w-full h-full flex flex-col'>
       {/* メッセージエリア */}
-      <ChatMessageList messages={messages} />
+      <div className='flex-1 overflow-hidden'>
+        <ChatMessageList messages={messages} isLoading={isLoading} />
+      </div>
       {/* 入力エリア */}
-      <div className='w-full pb-2'>
+      <div className='w-full pb-2 px-2 pt-1 border-t border-gray-100'>
         <ChatInput
           onSend={handleSend}
           disabled={isLoading}

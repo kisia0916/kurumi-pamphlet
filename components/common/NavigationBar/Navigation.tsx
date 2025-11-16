@@ -13,6 +13,12 @@ function Navigation() {
     const [viewportHeight, setViewportHeight] = useState(0);
   const fabRef = useRef<HTMLDivElement | null>(null);
   const [isAiOpen, setIsAiOpen] = useState(false);
+  // カードクリックなどから AI を閉じるカスタムイベントを購読
+  useEffect(() => {
+    const closeHandler = () => setIsAiOpen(false)
+    window.addEventListener('kurumi-ai-close', closeHandler)
+    return () => window.removeEventListener('kurumi-ai-close', closeHandler)
+  }, [])
     useEffect(() => {
       const handleResize = () => {
         if (window.innerHeight < 700){
@@ -95,12 +101,12 @@ function Navigation() {
           style={{ width: '50px', height: '50px' }}
           ref={fabRef}
         >
-          {/* AI パネル（ボタンの上に表示） */}
-          {isAiOpen && (
-            <div className="absolute right-0 bottom-[60px]">
-              <Base />
-            </div>
-          )}
+          {/* AI パネル（常にマウントして状態保持、表示制御のみ） */}
+          <div
+            className={`absolute right-0 bottom-[60px] transition-all duration-300 ease-out ${isAiOpen ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-2'}`}
+          >
+            <Base />
+          </div>
           <button 
             onClick={() => setIsAiOpen(v => !v)} 
             className="absolute right-0 bottom-0 w-[50px] h-[50px] flex items-center justify-center bg-white text-white rounded-full focus:outline-none border-1 border-gray-700"

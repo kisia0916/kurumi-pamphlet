@@ -111,49 +111,53 @@ export async function GET() {
         const collection = await db.collection("kurumi_data_01");
 
         const project_documents = projects_data.map((item: any) => {
-            const { building, floor, ...rest } = item;
+            const { building, floor,picture, ...rest } = item;
+            const formattedFloorNum = floor?.floor_num < 0 ? `B${Math.abs(floor.floor_num)}` : floor?.floor_num;
             return {
                 ...rest,
                 building_name: building?.name,
-                floor_num: floor?.floor_num,
+                floor_num: formattedFloorNum,
                 type: "企画",
                 createdAt: item.createdAt ? new Date(item.createdAt) : null,
-                $vectorize: `name: ${item.name}| type: ${"企画"} | description: ${item.description} | project_genre: ${item.project_genre} | team_name: ${item.team_name} | room_name: ${item.room_name} | building: ${building?.name || ''} | floor: ${floor?.floor_num || ''}`,
+                keywords:`${item.team_name}|${item.name}`,
+                $vectorize: `name: ${item.name}|keyword: ${item.team_name}|${item.name}| type: ${"企画"} | description: ${item.description} | project_genre: ${item.project_genre} | team_name: ${item.team_name} | room_name: ${item.room_name} | building: ${building?.name || ''} | floor: ${formattedFloorNum || ''}`,
             };
         });
 
         const food_documents = food_data.map((item: any) => {
-            const { food_pace, status, ...rest } = item;
+            const { food_pace, status,photo,food_place_id,food_index, ...rest } = item;
             const building = food_pace?.project?.building;
             const floor = food_pace?.project?.floor;
             const room_name = food_pace?.project?.room_name;
+            const formattedFloorNum = floor?.floor_num < 0 ? `B${Math.abs(floor.floor_num)}` : floor?.floor_num;
             
             return {
                 ...rest,
                 building_name: building?.name,
-                floor_num: floor?.floor_num,
+                floor_num: formattedFloorNum,
                 room_name: room_name,
                 place: food_pace?.place,
                 type: "食品",
                 createdAt: item.createdAt ? new Date(item.createdAt) : null,
-                $vectorize: `name: ${item.name} | type: ${"食品"} | category: ${item.category} | price: ${item.price} | allergens: ${item.allergens?.join(', ') || ''} | place: ${food_pace?.place || ''} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${floor?.floor_num || ''}`,
+                $vectorize: `name: ${item.name}| type: ${"食品"} | category: ${item.category} | price: ${item.price} | allergens: ${item.allergens?.join(', ') || ''} | place: ${food_pace?.place || ''} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${formattedFloorNum || ''}`,
             };
         });
 
         const stamp_documents = stamp_data.map((item: any) => {
-            const { project, ...rest } = item;
+            const { project,picture, ...rest } = item;
             const building = project?.building;
             const floor = project?.floor;
             const room_name = project?.room_name;
+            const formattedFloorNum = floor?.floor_num < 0 ? `B${Math.abs(floor.floor_num)}` : floor?.floor_num;
             
             return {
                 ...rest,
                 building_name: building?.name,
-                floor_num: floor?.floor_num,
+                floor_num: formattedFloorNum,
                 room_name: room_name,
                 type: "スタンプ",
                 createdAt: item.createdAt ? new Date(item.createdAt) : null,
-                $vectorize: `title: ${item.title} | type: ${"スタンプ"} | description: ${item.description} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${floor?.floor_num || ''}`,
+                $vectorize: `title: ${item.title} | type: ${"スタンプ"} | description: ${item.description} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${formattedFloorNum || ''}`,
             };
         });
 
@@ -162,17 +166,18 @@ export async function GET() {
             const building = project?.building;
             const floor = project?.floor;
             const room_name = project?.room_name;
+            const formattedFloorNum = floor?.floor_num < 0 ? `B${Math.abs(floor.floor_num)}` : floor?.floor_num;
             
             return {
                 ...rest,
                 building_name: building?.name,
-                floor_num: floor?.floor_num,
+                floor_num: formattedFloorNum,
                 room_name: room_name,
                 event_space_name: event_space?.name,
                 event_date_name: event_date?.name,
                 type: "イベント",
                 createdAt: item.createdAt ? new Date(item.createdAt) : null,
-                $vectorize: `title: ${item.title} | type: ${"イベント"} | start_time: ${item.start_time} | end_time: ${item.end_time} | event_space: ${event_space?.name || ''} | event_date: ${event_date?.name || ''} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${floor?.floor_num || ''}`,
+                $vectorize: `title: ${item.title} | type: ${"イベント"} | start_time: ${item.start_time} | end_time: ${item.end_time} | event_space: ${event_space?.name || ''} | event_date: ${event_date?.name || ''} | room_name: ${room_name || ''} | building: ${building?.name || ''} | floor: ${formattedFloorNum || ''}`,
             };
         });
 
