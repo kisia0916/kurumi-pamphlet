@@ -4,7 +4,7 @@ import { Card } from '../ui/card-ai'
 import BackButton from './BackButton'
 import KurumiAIQuestion from './Question/KurumiAIQuestion'
 
-function Base() {
+function Base(props:{wight:number,height:number}) {
   const wrapperRef = useRef<HTMLDivElement | null>(null)
   const [heightPx, setHeightPx] = useState<number>(140)
   const [widthPx, setWidthPx] = useState<number>(240)
@@ -16,8 +16,8 @@ function Base() {
   useEffect(() => {
     if (!wrapperRef.current) return
     requestAnimationFrame(() => {
-      setHeightPx(520)
-      setWidthPx(320)
+        setHeightPx(props.height)
+        setWidthPx(props.wight)
       setVisible(true)
       // アニメーション時間終了後にフラグを立ててトランジション解除
       const timeout = setTimeout(() => setAnimatedOnce(true), 450)
@@ -36,7 +36,7 @@ function Base() {
         willChange: animatedOnce ? 'opacity' : 'height,width,opacity',
       }}
     >
-  <Card className='w-full h-full rounded-[15px] flex flex-col'>
+  <Card className='w-full h-full rounded-[15px] flex flex-col border-[1px] border-gray-200'>
         <div className='w-full flex h-12 shrink-0 border-b border-gray-100'>
             {ai_now_page === 'top' && (
               <span className='main-font text-[18px] bg-gradient-to-r from-pink-400 to-amber-400 bg-clip-text text-transparent select-none m-auto'>Kurumi AI</span>

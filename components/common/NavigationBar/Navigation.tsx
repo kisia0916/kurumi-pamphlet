@@ -70,8 +70,9 @@ function Navigation() {
 
     if (viewportHeight < 700) {
       return (
+        <>
         <div 
-          className={`fixed bottom-5 right-5 z-[1000]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg `}
+          className={`fixed bottom-5 right-5 z-[1001]   transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg `}
           style={{ width: '50px', height: is_open_navigation ? '390px' : '50px' }}
           ref={fabRef}
         >
@@ -92,6 +93,32 @@ function Navigation() {
             {is_open_navigation? <X size={24} className='text-black'/> : <Menu size={24} className='text-black'/>}
           </button>
         </div>
+        {/* コンパクトモード用 AI ボタン（メニューボタンの上部） */}
+        <div 
+          className="fixed bottom-[80px] right-5 z-[1000] transition-all duration-300 ease-in-out bg-white rounded-full shadow-lg"
+          style={{ width: '50px', height: '50px' }}
+        >
+          {/* AI パネル（常にマウントして状態保持、表示制御のみ） */}
+          <div
+            className={`absolute right-0 bottom-[60px] transition-all duration-300 ease-out ${isAiOpen ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-2'}`}
+          >
+            <Base wight={320} height={400}/>
+          </div>
+          <button 
+            onClick={() => setIsAiOpen(v => !v)} 
+            className="absolute right-0 bottom-0 w-[50px] h-[50px] flex items-center justify-center bg-white text-white rounded-full focus:outline-none border-1 border-gray-700"
+            aria-label={isAiOpen ? 'Close AI' : 'Open AI'}
+          >
+            {isAiOpen ? (
+              <X size={24} className='text-black'/>
+            ) : (
+              <span className="main-font text-[20px] bg-gradient-to-r from-pink-400 to-amber-400 bg-clip-text text-transparent select-none">
+                AI
+              </span>
+            )}
+          </button>
+        </div>
+        </>
       )
     }else{
       return (
@@ -105,7 +132,7 @@ function Navigation() {
           <div
             className={`absolute right-0 bottom-[60px] transition-all duration-300 ease-out ${isAiOpen ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-2'}`}
           >
-            <Base />
+            <Base wight={320} height={520}/>
           </div>
           <button 
             onClick={() => setIsAiOpen(v => !v)} 
