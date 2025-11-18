@@ -8,9 +8,10 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
     { id: "121314", role: 'system', content: 'You are a helpful assistant for the school festival app.' },
     { id: "988900", role: 'assistant', content: 'こんにちは！KurumiAIです。文化祭に関することならなんでもお答えします！' },
   ])
+  const [messageJson,setMessageJson] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const openAIMessages = useMemo(() => (
-    messages.map(m => ({ role: m.role as ChatRole, content: m.content }))
+    messageJson.map(m => ({ role: m.role as ChatRole, content: m.content }))
   ), [messages])
 
   useEffect(()=>{
@@ -23,6 +24,7 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
     // ユーザーメッセージを追加
     const userMessage: ChatMessage = { id: `${Date.now()}-${Math.random()}`, role: 'user', content: text }
     setMessages(prev => [...prev, userMessage])
+    setMessageJson(prev=>[...prev,userMessage])
     setIsLoading(true)
 
     try {
@@ -46,6 +48,7 @@ function KurumiAIQuestion(props:{setHeightPx:any,setWidthPx:any}) {
       const assistantId = `${Date.now()}-${Math.random()}`
 
       setMessages(prev => [...prev, { id: assistantId, role: 'assistant', content: textBody.message,json_data:textBody.json }])
+      setMessageJson(prev => [...prev, { id: assistantId, role: 'assistant', content: textBody.norm_text }])
     } catch (error) {
       console.error('Error sending message:', error)
       setMessages(prev => [...prev, {
