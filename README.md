@@ -21,34 +21,6 @@ kurumi-pamphlet
 - PostgreSQL（接続文字列は環境変数で設定）
 
 
-## セットアップ
-
-1) 依存関係インストール
-
-```powershell
-npm ci
-```
-
-2) 環境変数を設定（プロジェクト直下に .env を作成）
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DBNAME?schema=public"
-```
-
-3) Prisma クライアント生成とマイグレーション適用（初回）
-
-```powershell
-npx prisma generate
-npx prisma migrate dev --name init
-```
-
-4) 開発サーバー起動
-
-```powershell
-npm run dev
-```
-
-アプリはデフォルトで http://localhost:3000 で起動します。
 
 
 ## スクリプト一覧（package.json）
