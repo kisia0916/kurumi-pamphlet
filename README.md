@@ -18,7 +18,6 @@ kurumi-pamphlet
 ## 必要要件
 
 - Node.js 18.18 以上（LTS 推奨）
-- PostgreSQL（接続文字列は環境変数で設定）
 
 
 
