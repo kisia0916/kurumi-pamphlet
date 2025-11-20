@@ -1,19 +1,8 @@
 kurumi-pamphlet
 =================
 
-攻玉社高等学校 文化祭で使用したデジタルパンフレット Web アプリケーションです。来場者が企画・会場・混雑状況をわかりやすく確認できるよう、マップ表示、検索、タイムライン、通知、スタンプラリー（クイズ・QRスキャン）などの機能を提供します。
+文化祭で使用したデジタルパンフレット Web アプリケーションです。来場者が企画・会場・混雑状況をわかりやすく確認できるよう、マップ表示、検索、スタンプラリー（クイズ・QRスキャン）などの機能を提供します。
 
-
-## 主な機能
-
-- マップ表示とピン配置（建物・教室・企画）
-- 企画一覧・詳細、タグ・ジャンル表示
-- 食品販売情報（カテゴリ・アレルゲン・販売状況）
-- イベントのタイムラインと会場情報
-- 建物やフロアの混雑ステータス
-- お知らせ配信（全体／一部）
-- スタンプラリー（クイズ、ユーザー押印登録、QRスキャン）
-- 検索（企画名・教室名・ジャンル・チーム名・建物名など複合 OR 検索）
 
 
 ## 技術スタック
@@ -22,45 +11,15 @@ kurumi-pamphlet
 - Language: TypeScript / React 19
 - Styling: Tailwind CSS v4
 - DB/ORM: PostgreSQL + Prisma 6
-- UI/Icons: Radix Slot, lucide-react
-- Map/Zoom: react-zoom-pan-pinch（地図画像の拡大縮小・ピン）
+- UI/Icons: Shadcn UI, lucide-react
 - Analytics: @vercel/analytics
 
 
 ## 必要要件
 
 - Node.js 18.18 以上（LTS 推奨）
-- PostgreSQL（接続文字列は環境変数で設定）
 
 
-## セットアップ
-
-1) 依存関係インストール
-
-```powershell
-npm ci
-```
-
-2) 環境変数を設定（プロジェクト直下に .env を作成）
-
-```env
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DBNAME?schema=public"
-```
-
-3) Prisma クライアント生成とマイグレーション適用（初回）
-
-```powershell
-npx prisma generate
-npx prisma migrate dev --name init
-```
-
-4) 開発サーバー起動
-
-```powershell
-npm run dev
-```
-
-アプリはデフォルトで http://localhost:3000 で起動します。
 
 
 ## スクリプト一覧（package.json）
@@ -70,18 +29,6 @@ npm run dev
 - start: 本番起動（next start）
 - lint: Lint 実行（next lint）
 - postinstall: Prisma クライアント生成（prisma generate）
-
-データ移行・バックアップ関連（scripts/ 配下のユーティリティ）
-
-- backup-schema: スキーマのバックアップ
-- restore-int-schema: Int ID スキーマへ復元（移行用）
-- restore-uuid-schema: UUID スキーマへ復元
-- export-data: 既存データのエクスポート（移行用 JSON 生成）
-- import-data: エクスポート済み JSON のインポート
-- setup-uuid-db: UUID スキーマで migrate 実行
-- migrate-to-uuid: バックアップ→旧スキーマ復元→エクスポート→UUID スキーマ復元→マイグレーション→インポートの一連処理
-
-補足: import/export スクリプトは移行前提で作られており、スキーマに差分がある場合は適宜コードのフィールド名を調整してください（scripts/migration-guide.md 参照）。
 
 
 ## データベースと Prisma
@@ -164,14 +111,4 @@ Next.js の Route Handlers として `app/api` 配下に実装されています
 - 本番ビルド時の ESLint エラーでデプロイが止まらないように `ignoreDuringBuilds: true` を設定しています
 - 開発時のみ `experimental.allowedDevOrigins` を許可（ngrok など）
 - スキーマ改変により scripts/*.js のフィールドが一致しない場合は適宜修正してください（例: Projects の `project_genre` など）
-
-
-## ライセンス
-
-本リポジトリのライセンス形態が未記載の場合は、著作権者の許可なく無断利用しないでください。公開利用を想定する場合は適切な LICENSE を追加してください。
-
-
-## 謝辞
-
-本アプリケーションは文化祭運営・出展者・来場者の皆さまのご協力のもと開発・運用されています。関係者の皆さまに感謝いたします。
 
