@@ -49,13 +49,14 @@ function MapPin(props:{pin:any,pin_title?:string,pic_url?:string,size:"s"|"l"|"s
     {/* 外側の青い円 + 中の黄色い円 */}
     <div className={`w-15 ${isSmall ? 'scale-65 origin-bottom' : ''} ${isMicro?'scale-50 origin-bottom' : ''} transition-transform`}>
       <div className={`w-15 h-15 ${Boolean(props.pin?.is_selected) ? 'bg-amber-400' : 'bg-blue-400'} rounded-full relative shadow-lg flex items-center justify-center m-auto`}>
-          <div className='w-14 h-14 rounded-full'>
+          <div className='w-14 h-14 rounded-full relative z-10'>
             <img src={`${props.pic_url}`} className='object-cover w-full h-full rounded-full'/>
           </div>
-          <div className={`w-3 h-3 ${Boolean(props.pin?.is_selected) ? 'bg-amber-400' : 'bg-blue-400'} rounded-full absolute mt-18 left-1/2 -translate-x-1/2 -translate-y-1/2`} />
+          {/*ピンの根本 - 角丸逆三角形 */}
+          <div className={`absolute -bottom-[5.5px] left-1/2 -translate-x-1/2 w-5 h-5 ${Boolean(props.pin?.is_selected) ? 'bg-amber-400' : 'bg-blue-400'} rotate-45 rounded-br-[3px]`} />
       </div>
       <div className='w-full flex'>
-        <span className={`m-auto mt-[7px] main-font-thin ${isSmall ? 'text-[12px] text-white' : ''} ${isMicro ? 'text-[10px] text-black' : ''} ${isLarge ? 'text-[14px] text-white' : ''} `}>{props.pin.type === "Room"?props.room_name:props.pin_title}</span>
+        <span className={`m-auto mt-[8px] main-font-thin ${isSmall ? 'text-[12px] text-white' : ''} ${isMicro ? 'text-[10px] text-black' : ''} ${isLarge ? 'text-[14px] text-white' : ''} `}>{props.pin.type === "Room"?props.room_name:props.pin_title}</span>
       </div>
     </div>
 </button>

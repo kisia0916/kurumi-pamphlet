@@ -19,12 +19,13 @@ export async function POST(request: NextRequest) {
     const  rewriteRes = await generateText({
       model: openai("gpt-4o-mini"),
       system:`
-          あなたはベクトル検索用の最適な検索クエリに変換するアシスタントです。" +
+          あなたはユーザーからの入力をベクトル検索用の最適な検索クエリに変換するアシスタントです。" +
         【重要ルール】
           1. ユーザーの質問の意図を正確に把握し、ベクトル検索に必要なキーワードのみ抽出して出力してください。
           2. 出力は一文のみ。
           3. 不要な説明や装飾的な言葉は一切含めないでください。
           4. ユーザーの要求がある特定の要素を指定したものでない場合は出力の最後にrandomを追加してください。
+          5. 出力に数字が含まれている場合、それを漢数字に変換してキーワードを出力してください。
         【出力例】
           1. テニス 企画 場所
           2. フードコート 食品 販売時間 random
@@ -41,12 +42,24 @@ export async function POST(request: NextRequest) {
      }
     //検索
     const projectOr: any[] = [];
-    for (const p of processed_rewrite.split(" ")) {
+    const keywords = processed_rewrite.split(" ");
+
+    // AI要約結果からビルディングを検索し、該当があればbuilding_idでの検索条件を追加
+    const buildingOr = keywords.map((k) => ({ name: { contains: k, mode: "insensitive" as const } }));
+    const matchedBuildings = await prisma.buildings.findMany({
+      where: { OR: buildingOr },
+      select: { id: true },
+    });
+    if (matchedBuildings.length > 0) {
+      const buildingIds = matchedBuildings.map((b) => b.id);
+      projectOr.push({ building_id: { in: buildingIds } });
+    }
+
+    for (const p of keywords) {
         projectOr.push({ name: { contains: p, mode: "insensitive" } });
         projectOr.push({ room_name: { contains: p, mode: "insensitive" } });
         projectOr.push({ project_genre: { contains: p, mode: "insensitive" } });
         projectOr.push({ team_name: { contains: p, mode: "insensitive" } });
-
     }
     const projects = await prisma.projects.findMany({
       where: { OR: projectOr },
@@ -82,36 +95,35 @@ export async function POST(request: NextRequest) {
     for await (const document of vectorCursor) {
       results.push(document);
     }
-    // 全フロアのステータスを取得し、指定の形式で整形
-    const floors = await prisma.floor.findMany({
-      include: { building: { select: { name: true } } }
-    })
+    // フロア・ビル・食品のステータスを並列取得
+    const [floors, buildings, foodStatusRows] = await Promise.all([
+      prisma.floor.findMany({
+        include: { building: { select: { name: true } } }
+      }),
+      prisma.buildings.findMany({
+        select: {
+          name: true,
+          statusHistory: {
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+            select: { status: true }
+          }
+        }
+      }),
+      prisma.foodData.findMany({
+        select: { name: true, status: true }
+      }),
+    ])
+
     const floorStatusList = floors.map((f) => ({
       building: f.building?.name || "",
       floor: f.floor_num < 0 ? `B${Math.abs(f.floor_num)}階` : `${f.floor_num}階`,
       status: f.status ?? null,
     }))
-
-    // 全ビルの最新ステータスを取得
-    const buildings = await prisma.buildings.findMany({
-      select: {
-        name: true,
-        statusHistory: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-          select: { status: true }
-        }
-      }
-    })
     const buildingStatusList = buildings.map((b) => ({
       building: b.name,
       status: b.statusHistory?.[0]?.status ?? null,
     }))
-
-    // 全食品の販売状況ステータス取得（名前とステータスのみ）
-    const foodStatusRows = await prisma.foodData.findMany({
-      select: { name: true, status: true }
-    })
     const foodStatusList = foodStatusRows.map(f => ({ name: f.name, status: f.status }))
 
     const context = [
