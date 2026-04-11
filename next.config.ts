@@ -1,17 +1,19 @@
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
+const imageHostnames = (process.env.NEXT_IMAGE_HOSTNAMES ?? "")
+  .split(",")
+  .map((hostname) => hostname.trim())
+  .filter(Boolean);
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "xrsvucyppaxvudgfnmdx.supabase.co",
-        port: "",
-        pathname: "/storage/v1/object/public/**",
-      },
-    ],
+    remotePatterns: imageHostnames.map((hostname) => ({
+      protocol: "https",
+      hostname,
+      port: "",
+      pathname: "/storage/v1/object/public/**",
+    })),
   },
 
   // Vercel などの本番ビルドで ESLint エラーにより失敗しないようにする

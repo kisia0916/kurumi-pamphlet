@@ -42,7 +42,7 @@ function FoodCard(props:{food:FoodData; statusOverride?: FoodStatusLike}) {
         />
       </div>
       <CardContent className="pt-0 flex-grow">
-        <h3 className="text-base font-semibold mb-0">{props.food.name}</h3>
+        <h3 className="text-base font-semibold mb-0 truncate whitespace-nowrap overflow-hidden">{props.food.name}</h3>
         <p className="text-base font-bold text-primary mb-1">
           ¥{props.food.price ? props.food.price.toLocaleString() : "N/A"}
         </p>
