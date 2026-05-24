@@ -2,24 +2,45 @@
 import React, { useEffect, useRef } from "react"
 import { Bot } from "lucide-react"
 import ProjectCard_ForAIRes from "./ProjectCard_ForAIRes"
+import BuildingCard_ForAIRes from "@/components/KurumiAI/Question/BuildingCard_ForAIRes"
 
 export type ChatRole = "system" | "user" | "assistant"
 export type ChatMessage = {
   id: string
   role: ChatRole
   content: string,
-  json_data?:{type:string,project_id:string}[]
+  json_data?: ({ type: 'project', project_id: string } | { type: 'building', building_id: string })[]
 }
 
 function ChatMessageList(props: { messages: ChatMessage[]; isLoading?: boolean }) {
   const bottomRef = useRef<HTMLDivElement | null>(null)
+  const listRef = useRef<HTMLDivElement | null>(null)
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    bottomRef.current?.scrollIntoView({ behavior })
+  }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    scrollToBottom("smooth")
   }, [props.messages])
 
+  useEffect(() => {
+    const target = listRef.current
+    if (!target) return
+
+    const observer = new MutationObserver(() => {
+      scrollToBottom("smooth")
+    })
+
+    observer.observe(target, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
   return (
-    <div className="w-full h-full overflow-y-auto px-3 py-2 space-y-2">
+    <div ref={listRef} className="w-full h-full overflow-y-auto px-3 py-2 space-y-2">
       {props.messages.filter(m => m.role !== 'system').map((m) => {
         if (m.role === 'assistant') {
           return (
@@ -38,11 +59,22 @@ function ChatMessageList(props: { messages: ChatMessage[]; isLoading?: boolean }
                   </div>
                   {m.json_data && m.json_data.length > 0 && (
                     <div className='mt-2 flex flex-col gap-2'>
-                      {m.json_data
-                        .filter(d => d && d.type === 'project' && d.project_id)
-                        .map((data_item, idx) => (
-                          <ProjectCard_ForAIRes project_id={data_item.project_id} key={data_item.project_id + '-' + idx} />
-                        ))}
+                      {(() => {
+                        const hasProjectCards = m.json_data.some((d) => d.type === 'project')
+                        if (hasProjectCards) {
+                          return m.json_data
+                            .filter((d): d is { type: 'project', project_id: string } => d.type === 'project' && Boolean(d.project_id))
+                            .map((data_item, idx) => (
+                              <ProjectCard_ForAIRes project_id={data_item.project_id} key={data_item.project_id + '-' + idx} />
+                            ))
+                        }
+
+                        return m.json_data
+                          .filter((d): d is { type: 'building', building_id: string } => d.type === 'building' && Boolean(d.building_id))
+                          .map((data_item, idx) => (
+                            <BuildingCard_ForAIRes building_id={data_item.building_id} key={data_item.building_id + '-' + idx} />
+                          ))
+                      })()}
                     </div>
                   )}
                 </div>

@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 enum FoodStatus {
   AVAILABLE
@@ -248,4 +249,11 @@ model notifications {
   content     String
   link        String?
   status      NotificationType @default(ALL)
+}
+
+model SitePublicationState {
+  id          String   @id @default("global")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isPublished Boolean  @default(true)
 }

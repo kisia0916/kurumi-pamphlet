@@ -55,7 +55,7 @@ function ProjectCard_ForAIRes(props:{project_id:string}) {
     <div className='flex mt-2 mb-2 ml-2'>
         <div className='w-full flex'>
             <Image
-            src={project.picture?.trim() || 'https://xrsvucyppaxvudgfnmdx.supabase.co/storage/v1/object/public/projectpic/soccor.jpg'}
+            src={project.picture?.trim()}
             alt={project.name}
             width={76}
             height={76}

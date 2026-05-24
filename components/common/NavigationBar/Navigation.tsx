@@ -13,6 +13,11 @@ function Navigation() {
     const [viewportHeight, setViewportHeight] = useState(0);
   const fabRef = useRef<HTMLDivElement | null>(null);
   const [isAiOpen, setIsAiOpen] = useState(false);
+
+    if (pathname?.startsWith('/maintenance')) {
+      return null;
+    }
+
   // カードクリックなどから AI を閉じるカスタムイベントを購読
   useEffect(() => {
     const closeHandler = () => setIsAiOpen(false)
